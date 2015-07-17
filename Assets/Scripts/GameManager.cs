@@ -3,7 +3,13 @@ using System.Collections;
 
 public class GameManager : MonoBehaviour 
 {
+    public enum GameState { Splash, Running, Paused, Over };
+    private GameState currentGameState = GameState.Running;
+
     InputManager gameInput = null;
+
+    public GameState CurrentGameState
+    { get { return currentGameState; } }
 
 	// Use this for initialization
 	void Start () 

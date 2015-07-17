@@ -10,6 +10,9 @@ public struct Keybinds
     public KeyCode Key_Right;
     public KeyCode Key_Interact;
     public KeyCode Key_Menu;
+
+    public int LeftMouse;
+    public int RightMouse;
 }
 
 public class InputManager
@@ -19,14 +22,19 @@ public class InputManager
     public delegate void KeyPressedEvent(List<string> keysPressed);
     public delegate void KeyHeldEvent(List<string> keysHeld);
     public delegate void KeyReleasedEvent(List<string> keysReleased);
+    public delegate void MouseMoveEvent(Vector3 mousePosition);
 
     public event KeyPressedEvent Key_Pressed;
     public event KeyHeldEvent Key_Held;
     public event KeyReleasedEvent Key_Released;
+    public event MouseMoveEvent Mouse_Moved;
 
     public Keybinds PlayerKeybinds = new Keybinds();
 
     private static InputManager instance = null;
+
+    private Vector3 previousMousePos = Vector3.zero;
+    private Vector3 currentMousePos = Vector3.zero;
 
     public static InputManager Instance
     {
@@ -49,6 +57,9 @@ public class InputManager
         PlayerKeybinds.Key_Interact = KeyCode.E;
         PlayerKeybinds.Key_Menu = KeyCode.Escape;
 
+        PlayerKeybinds.LeftMouse = 0;
+        PlayerKeybinds.RightMouse = 1;
+
         //Populate the KeyIDs Dictionary with the respective KeyCode IDS
         KeyIDs.Add(PlayerKeybinds.Key_Up.ToString(), 0);
         KeyIDs.Add(PlayerKeybinds.Key_Down.ToString(), 1);
@@ -56,6 +67,8 @@ public class InputManager
         KeyIDs.Add(PlayerKeybinds.Key_Right.ToString(), 3);
         KeyIDs.Add(PlayerKeybinds.Key_Interact.ToString(), 4);
         KeyIDs.Add(PlayerKeybinds.Key_Menu.ToString(), 5);
+        KeyIDs.Add(PlayerKeybinds.LeftMouse.ToString(), 6);
+        KeyIDs.Add(PlayerKeybinds.RightMouse.ToString(), 7);
 	}
 	
 	// Update is called once per frame
@@ -82,6 +95,11 @@ public class InputManager
         if (Input.GetKeyDown(PlayerKeybinds.Key_Menu))
             allPressedKeys.Add(PlayerKeybinds.Key_Menu.ToString());
 
+        if (Input.GetMouseButtonDown(PlayerKeybinds.LeftMouse))
+            allPressedKeys.Add(PlayerKeybinds.LeftMouse.ToString());
+        if (Input.GetMouseButtonDown(PlayerKeybinds.RightMouse))
+            allPressedKeys.Add(PlayerKeybinds.RightMouse.ToString());
+
         if (allPressedKeys.Count > 0)
         {
             if (Key_Pressed != null)
@@ -104,6 +122,11 @@ public class InputManager
             allHeldKeys.Add(PlayerKeybinds.Key_Interact.ToString());
         if (Input.GetKey(PlayerKeybinds.Key_Menu))
             allHeldKeys.Add(PlayerKeybinds.Key_Menu.ToString());
+
+        if (Input.GetMouseButton(PlayerKeybinds.LeftMouse))
+            allPressedKeys.Add(PlayerKeybinds.LeftMouse.ToString());
+        if (Input.GetMouseButton(PlayerKeybinds.RightMouse))
+            allPressedKeys.Add(PlayerKeybinds.RightMouse.ToString());
 
         if (allHeldKeys.Count > 0)
         {
@@ -128,11 +151,28 @@ public class InputManager
         if (!Input.GetKey(PlayerKeybinds.Key_Menu))
             allReleasedKeys.Add(PlayerKeybinds.Key_Menu.ToString());
 
+        if (!Input.GetMouseButton(PlayerKeybinds.LeftMouse))
+            allPressedKeys.Add(PlayerKeybinds.LeftMouse.ToString());
+        if (!Input.GetMouseButton(PlayerKeybinds.RightMouse))
+            allPressedKeys.Add(PlayerKeybinds.RightMouse.ToString());
+
         if (allReleasedKeys.Count > 0)
         {
             if (Key_Released != null)
                 Key_Released(allReleasedKeys);
         }
-        //================================================================================
+        //=================================================================================
+
+        //=============================== MOUSE MOVEMENT ==================================
+        currentMousePos = Input.mousePosition;
+
+        if (currentMousePos != previousMousePos)
+        {
+            if (Mouse_Moved != null)
+                Mouse_Moved(currentMousePos);
+
+            previousMousePos = currentMousePos;
+        }
+        //=================================================================================
     }
 }
