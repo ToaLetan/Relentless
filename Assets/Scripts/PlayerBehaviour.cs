@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 public class PlayerBehaviour : MonoBehaviour 
 {
-    public const float MOVE_SPEED = 1.0f;
+    private const float MOVE_SPEED = 1.0f;
+    private const float FLICKER_TIME = 0.075f;
+    private const int MAX_NUM_FLICKERS = 4;
 
     public enum PlayerState { Idle, Dead }
 
@@ -14,6 +16,17 @@ public class PlayerBehaviour : MonoBehaviour
     private GlobalConstants.Direction_Indices prevDirectionPressed;
 
     private List<int> prevPressedKeyIDs = new List<int>();
+
+    private Material spriteMaterial = null;
+
+    private Color flickerWhite = new Color(0.8f, 0.8f, 0.8f, 1);
+    private Color flickerRed = new Color(0.8f, 0, 0.8f, 1);
+    private Color noColourModifier = new Color(0, 0, 0, 0);
+    private Color currentColour;
+
+    private Timer flickerTimer = new Timer(FLICKER_TIME);
+
+    private int currentNumFlickers = 0;
 
     private PlayerState currentState = PlayerState.Idle;
 
@@ -27,15 +40,22 @@ public class PlayerBehaviour : MonoBehaviour
     {
         playerInput = InputManager.Instance;
 
+        //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
+        playerInput.Key_Pressed += ProcessKeyPress;
+        flickerTimer.OnTimerComplete += FlickerSprite;
+
+        spriteMaterial = gameObject.GetComponent<SpriteRenderer>().material;
 
         currDirectionVector = GlobalConstants.DOWN_VECTOR;
+        currentColour = noColourModifier;
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if(flickerTimer != null)
+            flickerTimer.Update();
 	}
 
     private void ProcessMovement(List<string> keys)
@@ -134,5 +154,47 @@ public class PlayerBehaviour : MonoBehaviour
         newPosition.y += direction.y * Time.deltaTime * MOVE_SPEED;
 
         gameObject.transform.position = newPosition;
+    }
+
+    private void ProcessKeyPress(List<string> keysPressed)
+    {
+        if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) )
+        {
+            if(currentNumFlickers == 0)
+                FlickerSprite();
+        }
+    }
+
+    private void FlickerSprite()
+    {
+        currentNumFlickers++;
+
+        if (currentColour != flickerRed)
+        {
+            spriteMaterial.SetColor("_OutlineColour", flickerWhite);
+            currentColour = flickerRed;
+        }
+        else
+        {
+            spriteMaterial.SetColor("_OutlineColour", flickerRed);
+            currentColour = noColourModifier;
+        }
+
+        spriteMaterial.SetColor("_FillColour", currentColour);
+
+        if (currentNumFlickers <= MAX_NUM_FLICKERS)
+            flickerTimer.ResetTimer(true);
+        else
+            StopFlickerSprite();
+    }
+
+    private void StopFlickerSprite()
+    {
+        currentNumFlickers = 0;
+
+        spriteMaterial.SetColor("_OutlineColour", noColourModifier);
+        spriteMaterial.SetColor("_FillColour", noColourModifier);
+
+        flickerTimer.ResetTimer();
     }
 }
