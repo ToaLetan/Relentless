@@ -97,18 +97,6 @@
     <Reference Include="UnityEditor.OSXStandalone.Extensions">
       <HintPath>Library\UnityAssemblies\UnityEditor.OSXStandalone.Extensions.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEditor.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library\UnityAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.Networking">
-      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
@@ -126,6 +114,10 @@
     <ProjectReference Include="UnityVS.Relentless.CSharp.Plugins.csproj">
       <Project>{66DEC3F9-795A-FDE8-1E3A-FBF66D335D50}</Project>
       <Name>UnityVS.Relentless.CSharp.Plugins</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityVS.Relentless.CSharp.csproj">
+      <Project>{24BDEE98-022D-C8A5-844D-602D49462A4B}</Project>
+      <Name>UnityVS.Relentless.CSharp</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
