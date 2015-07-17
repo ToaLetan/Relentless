@@ -17,7 +17,11 @@ public class PlayerBehaviour : MonoBehaviour
 
     private List<int> prevPressedKeyIDs = new List<int>();
 
-    private Material spriteMaterial = null;
+    private List<Material> spriteMaterials = new List<Material>();
+
+    private GameObject playerShoulder = null;
+    private GameObject playerArm = null;
+    private GameObject playerWeapon = null;
 
     private Color flickerWhite = new Color(0.8f, 0.8f, 0.8f, 1);
     private Color flickerRed = new Color(0.8f, 0, 0.8f, 1);
@@ -45,7 +49,16 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput.Key_Pressed += ProcessKeyPress;
         flickerTimer.OnTimerComplete += FlickerSprite;
 
-        spriteMaterial = gameObject.GetComponent<SpriteRenderer>().material;
+        //Get all player child objects for easy access later.
+        playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
+        playerArm = gameObject.transform.FindChild("Player_Arm").gameObject;
+        playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
+
+        //Populate the sprite materials with all sub-objects' materials.
+        spriteMaterials.Add(gameObject.GetComponent<SpriteRenderer>().material);
+        spriteMaterials.Add(playerShoulder.GetComponent<SpriteRenderer>().material);
+        spriteMaterials.Add(playerArm.GetComponent<SpriteRenderer>().material);
+        spriteMaterials.Add(playerWeapon.GetComponent<SpriteRenderer>().material); 
 
         currDirectionVector = GlobalConstants.DOWN_VECTOR;
         currentColour = noColourModifier;
@@ -171,16 +184,24 @@ public class PlayerBehaviour : MonoBehaviour
 
         if (currentColour != flickerRed)
         {
-            spriteMaterial.SetColor("_OutlineColour", flickerWhite);
             currentColour = flickerRed;
+
+            for (int i = 0; i < spriteMaterials.Count; i++)
+            {
+                spriteMaterials[i].SetColor("_OutlineColour", flickerWhite);
+                spriteMaterials[i].SetColor("_FillColour", currentColour);
+            }
         }
         else
         {
-            spriteMaterial.SetColor("_OutlineColour", flickerRed);
             currentColour = noColourModifier;
-        }
 
-        spriteMaterial.SetColor("_FillColour", currentColour);
+            for (int j = 0; j < spriteMaterials.Count; j++)
+            {
+                spriteMaterials[j].SetColor("_OutlineColour", flickerRed);
+                spriteMaterials[j].SetColor("_FillColour", currentColour);
+            }
+        }
 
         if (currentNumFlickers <= MAX_NUM_FLICKERS)
             flickerTimer.ResetTimer(true);
@@ -192,8 +213,11 @@ public class PlayerBehaviour : MonoBehaviour
     {
         currentNumFlickers = 0;
 
-        spriteMaterial.SetColor("_OutlineColour", noColourModifier);
-        spriteMaterial.SetColor("_FillColour", noColourModifier);
+        for (int k = 0; k < spriteMaterials.Count; k++)
+        {
+            spriteMaterials[k].SetColor("_OutlineColour", noColourModifier);
+            spriteMaterials[k].SetColor("_FillColour", noColourModifier);
+        }
 
         flickerTimer.ResetTimer();
     }
