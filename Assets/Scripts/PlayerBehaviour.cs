@@ -11,6 +11,7 @@ public class PlayerBehaviour : MonoBehaviour
     public enum PlayerState { Idle, Dead }
 
     private InputManager playerInput = null;
+    private GameManager gameManager = null;
 
     private GlobalConstants.Direction_Indices currentDirection = GlobalConstants.Direction_Indices.DOWN;
     private GlobalConstants.Direction_Indices prevDirectionPressed;
@@ -22,6 +23,7 @@ public class PlayerBehaviour : MonoBehaviour
     private GameObject playerShoulder = null;
     private GameObject playerArm = null;
     private GameObject playerWeapon = null;
+    private GameObject crosshair = null;
 
     private Color flickerWhite = new Color(0.8f, 0.8f, 0.8f, 1);
     private Color flickerRed = new Color(0.8f, 0, 0.8f, 1);
@@ -43,6 +45,7 @@ public class PlayerBehaviour : MonoBehaviour
 	void Start () 
     {
         playerInput = InputManager.Instance;
+        gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
 
         //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
@@ -53,6 +56,8 @@ public class PlayerBehaviour : MonoBehaviour
         playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
         playerArm = gameObject.transform.FindChild("Player_Arm").gameObject;
         playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
+
+        crosshair = GameObject.Find("Crosshair");
 
         //Populate the sprite materials with all sub-objects' materials.
         spriteMaterials.Add(gameObject.GetComponent<SpriteRenderer>().material);
@@ -67,8 +72,13 @@ public class PlayerBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if(flickerTimer != null)
-            flickerTimer.Update();
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
+        {
+            if (flickerTimer != null)
+                flickerTimer.Update();
+
+            UpdateCrosshairAim();
+        }
 	}
 
     private void ProcessMovement(List<string> keys)
@@ -220,5 +230,18 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         flickerTimer.ResetTimer();
+    }
+
+    private void UpdateCrosshairAim()
+    {
+        //Keep the arm rotated towards the Crosshair object.
+        float deltaX = crosshair.transform.position.x - playerArm.transform.position.x;
+        float deltaY = crosshair.transform.position.y - playerArm.transform.position.y;
+
+        float armAngle = Mathf.Atan2(deltaY, deltaX) * Mathf.Rad2Deg * -1;
+
+        Quaternion newRotation = Quaternion.AngleAxis(armAngle, -Vector3.forward);
+
+        playerArm.transform.rotation = newRotation;
     }
 }
