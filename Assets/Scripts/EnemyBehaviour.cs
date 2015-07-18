@@ -60,6 +60,8 @@ public class EnemyBehaviour : MonoBehaviour
     private void Despawn()
     {
         //Probably play a rad animation before despawning.
+        GameObject deathAnimation = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeathAnim"), gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+
         enemyFlicker.FlickerTimer.OnTimerComplete -= enemyFlicker.FlickerSprite;
         Destroy(gameObject);
     }
