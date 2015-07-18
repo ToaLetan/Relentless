@@ -71,6 +71,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\AnimationScript.cs" />
     <Compile Include="Assets\Scripts\EnemyBehaviour.cs" />
+    <Compile Include="Assets\Scripts\EnemySpawnManager.cs" />
     <Compile Include="Assets\Scripts\FlickerScript.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\GlobalConstants.cs" />
