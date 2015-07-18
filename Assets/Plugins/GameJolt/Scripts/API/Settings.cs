@@ -6,9 +6,9 @@ namespace GameJolt.API
 	public class Settings : ScriptableObject {
 		[Header("Game")]
 		[Tooltip("The game ID. It can be found on the Game Jolt website under Dashboard > YOUR-GAME > Game API > API Settings.")]
-		public int gameID;
+        public int gameID = 80387;
 		[Tooltip("The game Private Key. It can be found on the Game Jolt website under Dashboard > YOUR-GAME > Game API > API Settings.")]
-		public string privateKey;
+        public string privateKey = "868a95515c29e7177c38d24d59c75c5d";
 
 		[Header("Settings")]
 		[Tooltip("The time in seconds before an API call should timeout and return failure.")]

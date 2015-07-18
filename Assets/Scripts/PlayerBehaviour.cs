@@ -23,7 +23,6 @@ public class PlayerBehaviour : MonoBehaviour
     private GameObject playerArm = null;
     private GameObject playerWeapon = null;
     private GameObject crosshair = null;
-    private GameObject camera = null;
 
     private FlickerScript playerFlicker = null;
 
@@ -67,7 +66,6 @@ public class PlayerBehaviour : MonoBehaviour
         playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
 
         crosshair = GameObject.Find("Crosshair");
-        camera = gameObject.transform.FindChild("Main Camera").gameObject;
 
         //Populate the sprite materials with all sub-objects' materials.
         spriteMaterials.Add(gameObject.GetComponent<SpriteRenderer>().material);
@@ -248,8 +246,6 @@ public class PlayerBehaviour : MonoBehaviour
 
         playerInput.Key_Held -= ProcessMovement;
         playerInput.Key_Pressed -= ProcessKeyPress;
-
-        camera.transform.parent = null; //Detach from the camera
 
         Destroy(gameObject);
 

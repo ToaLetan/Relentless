@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour
 	// Use this for initialization
 	void Start () 
     {
-        Cursor.visible = false; //Hide the mouse cursor
+        //Cursor.visible = false; //Hide the mouse cursor
 
         inputManager = InputManager.Instance;
 
