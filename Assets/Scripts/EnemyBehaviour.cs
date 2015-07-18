@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyBehaviour : MonoBehaviour 
 {
-    private const float BASE_MOVE_SPEED = 2.0f;
+    private const float BASE_MOVE_SPEED = 0.5f;
 
     private GameManager gameManager = null;
 
@@ -11,7 +11,10 @@ public class EnemyBehaviour : MonoBehaviour
 
     private FlickerScript enemyFlicker = null;
 
+    private GameObject player = null;
+
     private int health = 3;
+    private int damage = 1;
     private int currentNumFlickers = 0;
 
     private float moveSpeed = BASE_MOVE_SPEED;
@@ -20,6 +23,12 @@ public class EnemyBehaviour : MonoBehaviour
     { 
         get { return health; }
         set { health = value; }
+    }
+
+    public int Damage
+    {
+        get { return damage; }
+        set { damage = value; }
     }
 
     public float MoveSpeed
@@ -32,17 +41,20 @@ public class EnemyBehaviour : MonoBehaviour
 	void Start () 
     {
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
+        player = GameObject.FindGameObjectWithTag("Player");
 
         enemyFlicker = gameObject.GetComponent<FlickerScript>();
 
         spriteMaterial = gameObject.GetComponent<SpriteRenderer>().material;
         enemyFlicker.SpriteMaterials.Add(spriteMaterial);
+
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if(gameManager.CurrentGameState == GameManager.GameState.Running)
+            UpdateMovement();
 	}
 
     public void OnHit(int damageTaken)
@@ -64,5 +76,28 @@ public class EnemyBehaviour : MonoBehaviour
 
         enemyFlicker.FlickerTimer.OnTimerComplete -= enemyFlicker.FlickerSprite;
         Destroy(gameObject);
+    }
+
+    private void UpdateMovement()
+    {
+        //Move towards the player.
+        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, player.transform.position, moveSpeed * Time.deltaTime);
+    }
+
+    private void OnTriggerEnter2D(Collider2D colliderObj)
+    {
+        switch(colliderObj.tag)
+        {
+            case "Player":
+                PlayerBehaviour playerScript = colliderObj.GetComponent<PlayerBehaviour>();
+
+                if (playerScript != null)
+                {
+                    playerScript.OnHit(damage, gameObject);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

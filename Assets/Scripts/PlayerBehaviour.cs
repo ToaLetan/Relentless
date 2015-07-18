@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class PlayerBehaviour : MonoBehaviour 
 {
     private const float MOVE_SPEED = 1.0f;
+    private const float KNOCKBACK = 5.0f;
 
     public enum PlayerState { Idle, Dead }
 
@@ -29,10 +30,17 @@ public class PlayerBehaviour : MonoBehaviour
 
     private Vector2 currDirectionVector = Vector2.zero;
 
+    private int health = 10;
     private int weaponDamage = 1;
 
     public PlayerState CurrentState
     { get { return currentState; } }
+
+    public int Health
+    {
+        get { return health; }
+        set { health = value; }
+    }
 
     public int WeaponDamage
     {
@@ -210,5 +218,37 @@ public class PlayerBehaviour : MonoBehaviour
         GameObject.Instantiate(projectile, playerWeapon.transform.position, playerWeapon.transform.rotation);
 
         projectile.GetComponent<ProjectileScript>().Damage = weaponDamage;
+    }
+
+    public void OnHit(int damageTaken, GameObject enemy)
+    {
+        //Apply damage, play the flicker effect and push the player back.
+        health -= damageTaken;
+
+        //Push the player away from the enemy that dealt damage
+        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, KNOCKBACK * Time.deltaTime * -1);
+
+        if (health <= 0)
+        {
+            
+            PlayerDeath();
+        }
+        else
+        {
+            playerFlicker.FlickerSprite();
+        }
+    }
+
+    private void PlayerDeath()
+    {
+        Debug.Log("GAME OVER");
+        GameObject deathAnim = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeathAnim"), gameObject.transform.position, gameObject.transform.rotation) as GameObject;
+
+        playerInput.Key_Held -= ProcessMovement;
+        playerInput.Key_Pressed -= ProcessKeyPress;
+
+        Destroy(gameObject);
+
+        gameManager.GameOver();
     }
 }

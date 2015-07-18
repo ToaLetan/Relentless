@@ -58,6 +58,7 @@ public class ProjectileScript : MonoBehaviour
                 if (enemyInfo != null)
                 {
                     enemyInfo.OnHit(damage);
+                    Despawn(); //Make sure to remove the projectile, though keeping it will be useful for a pierce effect
                 }
                 break;
             default:

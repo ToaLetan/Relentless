@@ -23,4 +23,9 @@ public class GameManager : MonoBehaviour
         if (gameInput != null)
             gameInput.Update();
 	}
+
+    public void GameOver()
+    {
+        currentGameState = GameState.Over;
+    }
 }
