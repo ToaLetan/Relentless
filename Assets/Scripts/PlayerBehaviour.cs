@@ -5,8 +5,6 @@ using System.Collections.Generic;
 public class PlayerBehaviour : MonoBehaviour 
 {
     private const float MOVE_SPEED = 1.0f;
-    private const float FLICKER_TIME = 0.075f;
-    private const int MAX_NUM_FLICKERS = 4;
 
     public enum PlayerState { Idle, Dead }
 
@@ -25,21 +23,22 @@ public class PlayerBehaviour : MonoBehaviour
     private GameObject playerWeapon = null;
     private GameObject crosshair = null;
 
-    private Color flickerWhite = new Color(0.8f, 0.8f, 0.8f, 1);
-    private Color flickerRed = new Color(0.8f, 0, 0.8f, 1);
-    private Color noColourModifier = new Color(0, 0, 0, 0);
-    private Color currentColour;
-
-    private Timer flickerTimer = new Timer(FLICKER_TIME);
-
-    private int currentNumFlickers = 0;
+    private FlickerScript playerFlicker = null;
 
     private PlayerState currentState = PlayerState.Idle;
 
     private Vector2 currDirectionVector = Vector2.zero;
 
+    private int weaponDamage = 1;
+
     public PlayerState CurrentState
     { get { return currentState; } }
+
+    public int WeaponDamage
+    {
+        get { return weaponDamage; }
+        set { weaponDamage = value; }
+    }
 
 	// Use this for initialization
 	void Start () 
@@ -47,10 +46,11 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput = InputManager.Instance;
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
 
+        playerFlicker = gameObject.GetComponent<FlickerScript>();
+
         //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
         playerInput.Key_Pressed += ProcessKeyPress;
-        flickerTimer.OnTimerComplete += FlickerSprite;
 
         //Get all player child objects for easy access later.
         playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
@@ -63,10 +63,11 @@ public class PlayerBehaviour : MonoBehaviour
         spriteMaterials.Add(gameObject.GetComponent<SpriteRenderer>().material);
         spriteMaterials.Add(playerShoulder.GetComponent<SpriteRenderer>().material);
         spriteMaterials.Add(playerArm.GetComponent<SpriteRenderer>().material);
-        spriteMaterials.Add(playerWeapon.GetComponent<SpriteRenderer>().material); 
+        spriteMaterials.Add(playerWeapon.GetComponent<SpriteRenderer>().material);
+
+        playerFlicker.SpriteMaterials = spriteMaterials;
 
         currDirectionVector = GlobalConstants.DOWN_VECTOR;
-        currentColour = noColourModifier;
 	}
 	
 	// Update is called once per frame
@@ -74,9 +75,6 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (gameManager.CurrentGameState == GameManager.GameState.Running)
         {
-            if (flickerTimer != null)
-                flickerTimer.Update();
-
             UpdateCrosshairAim();
         }
 	}
@@ -181,55 +179,15 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void ProcessKeyPress(List<string> keysPressed)
     {
-        if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) )
+        if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) ) //TESTING ONHIT FLICKER
         {
-            if(currentNumFlickers == 0)
-                FlickerSprite();
+            if(playerFlicker.CurrentNumFlickers == 0)
+                playerFlicker.FlickerSprite();
         }
-    }
-
-    private void FlickerSprite()
-    {
-        currentNumFlickers++;
-
-        if (currentColour != flickerRed)
+        if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()) )
         {
-            currentColour = flickerRed;
-
-            for (int i = 0; i < spriteMaterials.Count; i++)
-            {
-                spriteMaterials[i].SetColor("_OutlineColour", flickerWhite);
-                spriteMaterials[i].SetColor("_FillColour", currentColour);
-            }
+            Shoot();
         }
-        else
-        {
-            currentColour = noColourModifier;
-
-            for (int j = 0; j < spriteMaterials.Count; j++)
-            {
-                spriteMaterials[j].SetColor("_OutlineColour", flickerRed);
-                spriteMaterials[j].SetColor("_FillColour", currentColour);
-            }
-        }
-
-        if (currentNumFlickers <= MAX_NUM_FLICKERS)
-            flickerTimer.ResetTimer(true);
-        else
-            StopFlickerSprite();
-    }
-
-    private void StopFlickerSprite()
-    {
-        currentNumFlickers = 0;
-
-        for (int k = 0; k < spriteMaterials.Count; k++)
-        {
-            spriteMaterials[k].SetColor("_OutlineColour", noColourModifier);
-            spriteMaterials[k].SetColor("_FillColour", noColourModifier);
-        }
-
-        flickerTimer.ResetTimer();
     }
 
     private void UpdateCrosshairAim()
@@ -243,5 +201,14 @@ public class PlayerBehaviour : MonoBehaviour
         Quaternion newRotation = Quaternion.AngleAxis(armAngle, -Vector3.forward);
 
         playerArm.transform.rotation = newRotation;
+    }
+
+    private void Shoot()
+    {
+        GameObject projectile = Resources.Load<GameObject>("Prefabs/Player_Projectile");
+
+        GameObject.Instantiate(projectile, playerWeapon.transform.position, playerWeapon.transform.rotation);
+
+        projectile.GetComponent<ProjectileScript>().Damage = weaponDamage;
     }
 }
