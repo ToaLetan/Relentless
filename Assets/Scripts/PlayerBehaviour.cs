@@ -247,6 +247,8 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput.Key_Held -= ProcessMovement;
         playerInput.Key_Pressed -= ProcessKeyPress;
 
+        gameObject.transform.parent = null; //Detach from the camera
+
         Destroy(gameObject);
 
         gameManager.GameOver();

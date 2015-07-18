@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyBehaviour : MonoBehaviour 
 {
-    private const float BASE_MOVE_SPEED = 0.5f;
+    private const float BASE_MOVE_SPEED = 0.25f;
 
     private GameManager gameManager = null;
 

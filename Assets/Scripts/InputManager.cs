@@ -166,13 +166,13 @@ public class InputManager
         //=============================== MOUSE MOVEMENT ==================================
         currentMousePos = Input.mousePosition;
 
-        if (currentMousePos != previousMousePos)
-        {
+        //if (currentMousePos != previousMousePos)
+        //{
             if (Mouse_Moved != null)
                 Mouse_Moved(currentMousePos);
 
-            previousMousePos = currentMousePos;
-        }
+            //previousMousePos = currentMousePos;
+        //}
         //=================================================================================
     }
 }
