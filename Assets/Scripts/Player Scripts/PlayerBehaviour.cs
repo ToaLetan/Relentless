@@ -89,42 +89,45 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void ProcessMovement(List<string> keys)
     {
-        Vector2 moveDirection = Vector2.zero;
-
-        if (currentState == PlayerState.Idle)
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
         {
-            if (keys.Contains(playerInput.PlayerKeybinds.Key_Up.ToString()) || keys.Contains(playerInput.PlayerKeybinds.Key_Down.ToString())
-                || keys.Contains(playerInput.PlayerKeybinds.Key_Left.ToString()) || keys.Contains(playerInput.PlayerKeybinds.Key_Right.ToString()) )
+            Vector2 moveDirection = Vector2.zero;
+
+            if (currentState == PlayerState.Idle)
             {
-                SetDirection(keys);
-
-                switch(currentDirection)
+                if (keys.Contains(playerInput.PlayerKeybinds.Key_Up.ToString()) || keys.Contains(playerInput.PlayerKeybinds.Key_Down.ToString())
+                    || keys.Contains(playerInput.PlayerKeybinds.Key_Left.ToString()) || keys.Contains(playerInput.PlayerKeybinds.Key_Right.ToString()))
                 {
-                    case GlobalConstants.Direction_Indices.UP:
-                        moveDirection = GlobalConstants.UP_VECTOR;
-                        break;
-                    case GlobalConstants.Direction_Indices.DOWN:
-                        moveDirection = GlobalConstants.DOWN_VECTOR;
-                        break;
-                    case GlobalConstants.Direction_Indices.LEFT:
-                        moveDirection = GlobalConstants.LEFT_VECTOR;
-                        break;
-                    case GlobalConstants.Direction_Indices.RIGHT:
-                        moveDirection = GlobalConstants.RIGHT_VECTOR;
-                        break;
+                    SetDirection(keys);
+
+                    switch (currentDirection)
+                    {
+                        case GlobalConstants.Direction_Indices.UP:
+                            moveDirection = GlobalConstants.UP_VECTOR;
+                            break;
+                        case GlobalConstants.Direction_Indices.DOWN:
+                            moveDirection = GlobalConstants.DOWN_VECTOR;
+                            break;
+                        case GlobalConstants.Direction_Indices.LEFT:
+                            moveDirection = GlobalConstants.LEFT_VECTOR;
+                            break;
+                        case GlobalConstants.Direction_Indices.RIGHT:
+                            moveDirection = GlobalConstants.RIGHT_VECTOR;
+                            break;
+                    }
+
+                    if (moveDirection != Vector2.zero) //If the player is heading a certain direction, apply movement.
+                        Move(moveDirection);
+
+                    prevDirectionPressed = currentDirection;
+
+                    prevPressedKeyIDs.Clear();
+                    for (int i = 0; i < keys.Count; i++)
+                    {
+                        prevPressedKeyIDs.Add(playerInput.KeyIDs[keys[i]]);
+                    }
+
                 }
-
-                if (moveDirection != Vector2.zero) //If the player is heading a certain direction, apply movement.
-                    Move(moveDirection);
-
-                prevDirectionPressed = currentDirection;
-
-                prevPressedKeyIDs.Clear();
-                for (int i = 0; i < keys.Count; i++)
-                {
-                    prevPressedKeyIDs.Add(playerInput.KeyIDs[keys[i]] );
-                }
-
             }
         }
     }
@@ -179,22 +182,23 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Vector3 newPosition = gameObject.transform.position;
 
-        newPosition.x += direction.x * Time.deltaTime * MOVE_SPEED;
-        newPosition.y += direction.y * Time.deltaTime * MOVE_SPEED;
+        if (SpeculativeContacts.CheckObjectContact(gameObject, direction, MOVE_SPEED * Time.deltaTime) == false)
+        {
+            newPosition.x += direction.x * Time.deltaTime * MOVE_SPEED;
+            newPosition.y += direction.y * Time.deltaTime * MOVE_SPEED;
+        }
 
         gameObject.transform.position = newPosition;
     }
 
     private void ProcessKeyPress(List<string> keysPressed)
     {
-        if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) ) //TESTING ONHIT FLICKER
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
         {
-            if(playerFlicker.CurrentNumFlickers == 0)
-                playerFlicker.FlickerSprite();
-        }
-        if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()) )
-        {
-            Shoot();
+            if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()))
+            {
+                Shoot();
+            }
         }
     }
 

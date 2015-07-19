@@ -4,6 +4,8 @@ using GameJolt;
 
 public class GameManager : MonoBehaviour 
 {
+    private const int SCOREBOARD_ID = 83337;
+
     public enum GameState { Splash, Running, Paused, Over };
     private GameState currentGameState = GameState.Splash;
 
@@ -64,7 +66,7 @@ public class GameManager : MonoBehaviour
 
         string scoreboardText = "Wave reached: " + waveReached;
 
-        GameJolt.API.Scores.Add(waveReached, scoreboardText, 0, "", (bool success) => 
+        GameJolt.API.Scores.Add(waveReached, scoreboardText, SCOREBOARD_ID, "", (bool success) => 
         {
             Debug.Log(string.Format("Score Add {0}.", success ? "Successful" : "Failed"));
         });
