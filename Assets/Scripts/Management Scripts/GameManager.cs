@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using GameJolt;
 
 public class GameManager : MonoBehaviour 
@@ -8,6 +9,9 @@ public class GameManager : MonoBehaviour
 
     public enum GameState { Splash, Running, Paused, Over };
     private GameState currentGameState = GameState.Splash;
+
+    public delegate void GameEvent();
+    public event GameEvent GameOverEvent;
 
     private InputManager gameInput = null;
     private EnemySpawnManager enemySpawner = null;
@@ -18,6 +22,8 @@ public class GameManager : MonoBehaviour
     private string playerName = "Player";
 
     private int waveReached = 0;
+
+    private bool isLoggedIn = false;
 
     public GameState CurrentGameState
     { get { return currentGameState; } }
@@ -37,14 +43,12 @@ public class GameManager : MonoBehaviour
             if (success)
             {
                 playerName = GameJolt.API.Manager.Instance.CurrentUser.Name;
-                Debug.Log("The user: " + playerName + " signed in!");
-
+                isLoggedIn = true;
                 StartGame();
             }
             else
             {
-                Debug.Log("The user failed to signed in or closed the window :(");
-
+                isLoggedIn = false;
                 StartGame();
             }
             });
@@ -61,7 +65,14 @@ public class GameManager : MonoBehaviour
     {
         currentGameState = GameState.Over;
 
+        if (GameOverEvent != null)
+            GameOverEvent();
+
         uiManager.UpdateHUD(); //Update the player's HUD one last time.
+
+        uiManager.ShowHideGameOver(true);
+        uiManager.ShowGameOverScore();
+        uiManager.ShowSubmissionStatus(isLoggedIn);
 
         //If the user has signed in, submit the high score.
         waveReached = enemySpawner.CurrentWave;
@@ -82,5 +93,26 @@ public class GameManager : MonoBehaviour
         Cursor.visible = false; //Hide the mouse cursor
 
         currentGameState = GameState.Running;
+
+        //Subscribe to the input manager's key press event.
+        gameInput.Key_Pressed += ProcessInput;
+    }
+
+    public void RestartGame()
+    {
+        gameInput.Key_Pressed -= ProcessInput;
+
+        Application.LoadLevel("Main");
+    }
+
+    private void ProcessInput(List<string> keysPressed)
+    {
+        if (currentGameState == GameState.Over)
+        {
+            if (keysPressed.Contains(gameInput.PlayerKeybinds.Key_Interact.ToString()))
+            {
+                RestartGame();
+            }
+        }
     }
 }

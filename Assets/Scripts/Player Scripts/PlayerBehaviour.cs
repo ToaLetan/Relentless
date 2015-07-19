@@ -88,6 +88,7 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput.Key_Released += Idle;
         playerInput.Key_Pressed += ProcessKeyPress;
         invincibilityTimer.OnTimerComplete += EndInvincibilityTime;
+        gameManager.GameOverEvent += OnGameOver;
 
         crosshair = GameObject.Find("Crosshair");
 
@@ -161,7 +162,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (gameManager.CurrentGameState == GameManager.GameState.Running)
         {
-            if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()))
+            if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()) )
             {
                 Shoot();
             }
@@ -360,5 +361,13 @@ public class PlayerBehaviour : MonoBehaviour
     private void EndInvincibilityTime()
     {
         invincibilityTimer.ResetTimer();
+    }
+
+    private void OnGameOver()
+    {
+        playerInput.Key_Held -= ProcessMovement;
+        playerInput.Key_Pressed -= ProcessKeyPress;
+        playerInput.Key_Released -= Idle;
+        invincibilityTimer.OnTimerComplete -= EndInvincibilityTime;
     }
 }

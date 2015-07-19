@@ -15,11 +15,14 @@ public class UIManager : MonoBehaviour
     private GameObject[] waveNumDisplay = new GameObject[3];
     private GameObject[] enemyNumDisplay = new GameObject[3];
     private GameObject[] moneyNumDisplay = new GameObject[3];
+    private GameObject[] gameOverScoreDisplay = new GameObject[3];
 
     private Sprite[] numberSprites = new Sprite[10];
 
     private GameObject HUDBar = null;
     private GameObject crosshair = null;
+    private GameObject gameOverPanel = null;
+    private GameObject scoreSubmissionStatus = null;
 
     private PlayerBehaviour playerInfo = null;
 
@@ -78,7 +81,17 @@ public class UIManager : MonoBehaviour
 
         crosshair = GameObject.Find("Crosshair");
 
+        gameOverPanel = HUDBar.transform.FindChild("GameOverPanel").gameObject;
+        scoreSubmissionStatus = gameOverPanel.transform.FindChild("SubmissionStatus").gameObject;
+        gameOverScoreDisplay[0] = gameOverPanel.transform.FindChild("Score_Ones").gameObject;
+        gameOverScoreDisplay[1] = gameOverPanel.transform.FindChild("Score_Tens").gameObject;
+        gameOverScoreDisplay[2] = gameOverPanel.transform.FindChild("Score_Hundreds").gameObject;
+
         numberSprites = Resources.LoadAll<Sprite>("Sprites/UI/UI_Numbers");
+
+        ShowHideGameOver(false);
+
+        gameManager.GameOverEvent += OnGameOver;
 	}
 	
 	// Update is called once per frame
@@ -151,5 +164,34 @@ public class UIManager : MonoBehaviour
         onesText.sprite = numberSprites[onesValue];
         tensText.sprite = numberSprites[tensValue];
         hundredsText.sprite = numberSprites[hundredsValue];
+    }
+
+    public void ShowHideGameOver(bool showGameOver)
+    {
+        gameOverPanel.GetComponent<SpriteRenderer>().enabled = showGameOver;
+
+        for (int i = 0; i < gameOverPanel.transform.childCount; i++)
+        {
+            if (gameOverPanel.transform.GetChild(i).GetComponent<SpriteRenderer>() != null)
+                gameOverPanel.transform.GetChild(i).GetComponent<SpriteRenderer>().enabled = showGameOver;
+        }
+    }
+
+    public void ShowGameOverScore()
+    {
+        NumericalDisplay(gameOverScoreDisplay, spawnManager.CurrentWave);
+    }
+
+    public void ShowSubmissionStatus(bool isLoggedIn)
+    {
+        if (isLoggedIn == true)
+            scoreSubmissionStatus.GetComponent<AnimationScript>().PlayAnimation("Text_Submitted");
+        else
+            scoreSubmissionStatus.GetComponent<AnimationScript>().PlayAnimation("Text_NotSubmitted");
+    }
+
+    private void OnGameOver()
+    {
+        inputManager.Mouse_Moved -= ProcessMousePosition;
     }
 }
