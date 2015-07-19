@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 
     private InputManager gameInput = null;
     private EnemySpawnManager enemySpawner = null;
+    private UIManager uiManager = null;
 
     private GameObject splashScreen = null;
 
@@ -27,6 +28,7 @@ public class GameManager : MonoBehaviour
         gameInput = InputManager.Instance;
 
         enemySpawner = gameObject.GetComponent<EnemySpawnManager>();
+        uiManager = gameObject.GetComponent<UIManager>();
 
         splashScreen = GameObject.Find("Main Camera").transform.FindChild("SplashScreen").gameObject;
 
@@ -58,6 +60,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         currentGameState = GameState.Over;
+
+        uiManager.UpdateHUD(); //Update the player's HUD one last time.
 
         //If the user has signed in, submit the high score.
         waveReached = enemySpawner.CurrentWave;

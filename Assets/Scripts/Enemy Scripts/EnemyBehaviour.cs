@@ -77,7 +77,9 @@ public class EnemyBehaviour : MonoBehaviour
 
     private void Despawn()
     {
-        //Probably play a rad animation before despawning.
+        //Probably play a rad animation before despawning. Give the player money to spend on the vendor.
+        player.GetComponent<PlayerBehaviour>().Money += 1;
+
         GameObject deathAnimation = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeathAnim"), gameObject.transform.position, gameObject.transform.rotation) as GameObject;
 
         enemyFlicker.FlickerTimer.OnTimerComplete -= enemyFlicker.FlickerSprite;
@@ -125,7 +127,6 @@ public class EnemyBehaviour : MonoBehaviour
                 if (playerScript != null && playerScript.InvincibilityTimer.IsTimerRunning == false)
                 {
                     playerScript.OnHit(damage, gameObject);
-                    Debug.Log("ONSTAY DAMAGE");
                 }
                 break;
             default:

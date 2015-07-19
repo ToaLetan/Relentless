@@ -1,32 +1,93 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour 
 {
     private InputManager inputManager = null;
+    private GameManager gameManager = null;
+    private EnemySpawnManager spawnManager = null;
 
     private Camera mainCamera = null;
 
+    private List<GameObject> healthBlips = new List<GameObject>();
+
+    private GameObject[] waveNumDisplay = new GameObject[3];
+    private GameObject[] enemyNumDisplay = new GameObject[3];
+    private GameObject[] moneyNumDisplay = new GameObject[3];
+
+    private Sprite[] numberSprites = new Sprite[10];
+
+    private GameObject HUDBar = null;
     private GameObject crosshair = null;
 
-    private Vector2 healthBlipStartPos = new Vector2(-0.642f, 0.04f);
+    private PlayerBehaviour playerInfo = null;
+
+    private Vector2 healthBlipStartPos = new Vector2(-0.65f, 0.04f);
+
+    private int previousPlayerHealth = 0;
+    private int previousWaveNum = 0;
+    private int previousNumEnemies = 0;
+    private int previousPlayerMoney = 0;
 
 	// Use this for initialization
 	void Start () 
     {
         inputManager = InputManager.Instance;
 
+        gameManager = gameObject.GetComponent<GameManager>();
+        spawnManager = gameObject.GetComponent<EnemySpawnManager>();
+
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
 
         inputManager.Mouse_Moved += ProcessMousePosition;
 
-        crosshair = GameObject.Find("Crosshair"); 
+        playerInfo = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
+
+        //Get the HUD, populate player health and game stats
+        HUDBar = mainCamera.transform.FindChild("HUDBar").gameObject;
+
+        for (int i = 0; i < playerInfo.Health; i++)
+        {
+            Vector3 newBlipLocalPosition = new Vector3(healthBlipStartPos.x, healthBlipStartPos.y, 0);
+
+            GameObject newHealthBlip = GameObject.Instantiate(Resources.Load("Prefabs/Health_Blip") ) as GameObject;
+
+            float blipWidth = newHealthBlip.GetComponent<SpriteRenderer>().bounds.extents.x * 2;
+
+            newBlipLocalPosition.x += blipWidth * i;
+
+            newHealthBlip.transform.parent = HUDBar.transform;
+
+            newHealthBlip.transform.localPosition = newBlipLocalPosition;
+
+            healthBlips.Add(newHealthBlip);
+        }
+
+        waveNumDisplay[0] = HUDBar.transform.FindChild("Wave_Ones").gameObject;
+        waveNumDisplay[1] = HUDBar.transform.FindChild("Wave_Tens").gameObject;
+        waveNumDisplay[2] = HUDBar.transform.FindChild("Wave_Hundreds").gameObject;
+
+        enemyNumDisplay[0] = HUDBar.transform.FindChild("Enemies_Ones").gameObject;
+        enemyNumDisplay[1] = HUDBar.transform.FindChild("Enemies_Tens").gameObject;
+        enemyNumDisplay[2] = HUDBar.transform.FindChild("Enemies_Hundreds").gameObject;
+
+        moneyNumDisplay[0] = HUDBar.transform.FindChild("Money_Ones").gameObject;
+        moneyNumDisplay[1] = HUDBar.transform.FindChild("Money_Tens").gameObject;
+        moneyNumDisplay[2] = HUDBar.transform.FindChild("Money_Hundreds").gameObject;
+
+        crosshair = GameObject.Find("Crosshair");
+
+        numberSprites = Resources.LoadAll<Sprite>("Sprites/UI/UI_Numbers");
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-	
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
+        {
+            UpdateHUD();
+        }
 	}
 
     private void ProcessMousePosition(Vector3 mousePosition)
@@ -40,5 +101,55 @@ public class UIManager : MonoBehaviour
         Vector3 newMousePos = mainCamera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 1) );
 
         crosshair.transform.position = newMousePos;
+    }
+
+    public void UpdateHUD()
+    {
+        //Update player health if it's changed.
+        if (previousPlayerHealth != playerInfo.Health)
+        {
+            for (int i = 0; i < healthBlips.Count; i++)
+            {
+                if (i > playerInfo.Health - 1)
+                    healthBlips[i].GetComponent<SpriteRenderer>().enabled = false;
+            }
+            previousPlayerHealth = playerInfo.Health;
+        }
+
+        //Update Wave Num
+        if (previousWaveNum != spawnManager.CurrentWave)
+        {
+            NumericalDisplay(waveNumDisplay, spawnManager.CurrentWave);
+            previousWaveNum = spawnManager.CurrentWave;
+        }
+
+        //Update Num Enemies
+        if (previousNumEnemies != spawnManager.NumEnemiesInScene)
+        {
+            NumericalDisplay(enemyNumDisplay, spawnManager.NumEnemiesInScene);
+            previousNumEnemies = spawnManager.NumEnemiesInScene;
+        }
+
+        //Update Money
+        if (previousPlayerMoney != playerInfo.Money)
+        {
+            NumericalDisplay(moneyNumDisplay, playerInfo.Money);
+            previousPlayerMoney = playerInfo.Money;
+        }
+    }
+
+    private void NumericalDisplay(GameObject[] displayObjs, int valueToShow)
+    {
+        int onesValue = (valueToShow / 1) % 10;
+        int tensValue = (valueToShow / 10) % 10;
+        int hundredsValue = (valueToShow / 100) % 10;
+
+        SpriteRenderer onesText = displayObjs[0].GetComponent<SpriteRenderer>();
+        SpriteRenderer tensText = displayObjs[1].GetComponent<SpriteRenderer>();
+        SpriteRenderer hundredsText = displayObjs[2].GetComponent<SpriteRenderer>();
+
+        onesText.sprite = numberSprites[onesValue];
+        tensText.sprite = numberSprites[tensValue];
+        hundredsText.sprite = numberSprites[hundredsValue];
     }
 }

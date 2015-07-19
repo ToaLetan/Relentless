@@ -40,6 +40,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private int health = 10;
     private int weaponDamage = 1;
+    private int money = 0;
 
     public Timer InvincibilityTimer
     { get { return invincibilityTimer; } }
@@ -57,6 +58,12 @@ public class PlayerBehaviour : MonoBehaviour
     {
         get { return weaponDamage; }
         set { weaponDamage = value; }
+    }
+
+    public int Money
+    {
+        get { return money; }
+        set { money = value; }
     }
 
 	// Use this for initialization
@@ -353,6 +360,5 @@ public class PlayerBehaviour : MonoBehaviour
     private void EndInvincibilityTime()
     {
         invincibilityTimer.ResetTimer();
-        Debug.Log("IFRAMES DONE");
     }
 }
