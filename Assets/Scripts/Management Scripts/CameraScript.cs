@@ -4,7 +4,8 @@ using System.Collections;
 public class CameraScript : MonoBehaviour 
 {
     private const float BOUNDS_X = 1.56f;
-    private const float BOUNDS_Y = 1.36f;
+    private const float BOUNDS_Y_BOTTOM = -1.36f;
+    private const float BOUNDS_Y_TOP = 1.6f;
 
     private GameManager gameManager = null;
 
@@ -33,7 +34,7 @@ public class CameraScript : MonoBehaviour
 
             if (player.transform.position.x <= BOUNDS_X && player.transform.position.x >= -BOUNDS_X)
                 newPos.x = player.transform.position.x;
-            if(player.transform.position.y <= BOUNDS_Y && player.transform.position.y >= -BOUNDS_Y)
+            if (player.transform.position.y <= BOUNDS_Y_TOP && player.transform.position.y >= BOUNDS_Y_BOTTOM)
                 newPos.y = player.transform.position.y;
 
             gameObject.transform.position = newPos;

@@ -9,6 +9,7 @@ public class PlayerBehaviour : MonoBehaviour
     private const float ARM_POSITION_X_DEFAULT = 0.0601f;
     private const float ARM_POSITION_X_LEFT = 0.0292f;
     private const float ARM_POSITION_X_RIGHT = -0.0006f;
+    private const float INVINCIBLE_TIME = 0.5f;
 
     public enum PlayerState { Idle, Dead }
 
@@ -31,12 +32,17 @@ public class PlayerBehaviour : MonoBehaviour
     private AnimationScript playerAnimScript = null;
     private AnimationScript shoulderAnimScript = null;
 
+    private Timer invincibilityTimer = null;
+
     private PlayerState currentState = PlayerState.Idle;
 
     private Vector2 currDirectionVector = Vector2.zero;
 
     private int health = 10;
     private int weaponDamage = 1;
+
+    public Timer InvincibilityTimer
+    { get { return invincibilityTimer; } }
 
     public PlayerState CurrentState
     { get { return currentState; } }
@@ -68,10 +74,13 @@ public class PlayerBehaviour : MonoBehaviour
         playerAnimScript = gameObject.GetComponent<AnimationScript>();
         shoulderAnimScript = playerShoulder.GetComponent<AnimationScript>();
 
+        invincibilityTimer = new Timer(INVINCIBLE_TIME);
+
         //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
         playerInput.Key_Released += Idle;
         playerInput.Key_Pressed += ProcessKeyPress;
+        invincibilityTimer.OnTimerComplete += EndInvincibilityTime;
 
         crosshair = GameObject.Find("Crosshair");
 
@@ -91,6 +100,7 @@ public class PlayerBehaviour : MonoBehaviour
     {
         if (gameManager.CurrentGameState == GameManager.GameState.Running)
         {
+            invincibilityTimer.Update();
             UpdateCrosshairAim();
         }
 	}
@@ -256,19 +266,30 @@ public class PlayerBehaviour : MonoBehaviour
     public void OnHit(int damageTaken, GameObject enemy)
     {
         //Apply damage, play the flicker effect and push the player back.
-        health -= damageTaken;
-
-        //Push the player away from the enemy that dealt damage
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, KNOCKBACK * Time.deltaTime * -1);
-
-        if (health <= 0)
+        if (invincibilityTimer.IsTimerRunning == false)
         {
-            
-            PlayerDeath();
-        }
-        else
-        {
-            playerFlicker.FlickerSprite();
+            invincibilityTimer.StartTimer();
+
+            health -= damageTaken;
+
+            //Push the player away from the enemy that dealt damage
+            Vector3 vectorToKnockback = Vector3.Normalize(enemy.transform.position - gameObject.transform.position);
+            Vector2 knockbackDirection = new Vector2(-vectorToKnockback.x, -vectorToKnockback.y);
+
+            int directionModifier = 0;
+
+            if (SpeculativeContacts.CheckObjectContact(gameObject, knockbackDirection, KNOCKBACK * Time.deltaTime) == false)
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, KNOCKBACK * Time.deltaTime * -1);
+
+            if (health <= 0)
+            {
+
+                PlayerDeath();
+            }
+            else
+            {
+                playerFlicker.FlickerSprite();
+            }
         }
     }
 
@@ -279,6 +300,8 @@ public class PlayerBehaviour : MonoBehaviour
 
         playerInput.Key_Held -= ProcessMovement;
         playerInput.Key_Pressed -= ProcessKeyPress;
+        playerInput.Key_Released -= Idle;
+        invincibilityTimer.OnTimerComplete -= EndInvincibilityTime;
 
         Destroy(gameObject);
 
@@ -325,5 +348,11 @@ public class PlayerBehaviour : MonoBehaviour
                 playerArm.transform.localPosition = new Vector3(ARM_POSITION_X_RIGHT, playerArm.transform.localPosition.y, playerArm.transform.localPosition.z);
                 break;
         }
+    }
+
+    private void EndInvincibilityTime()
+    {
+        invincibilityTimer.ResetTimer();
+        Debug.Log("IFRAMES DONE");
     }
 }

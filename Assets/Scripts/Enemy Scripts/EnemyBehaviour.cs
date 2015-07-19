@@ -59,7 +59,7 @@ public class EnemyBehaviour : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if(gameManager.CurrentGameState == GameManager.GameState.Running)
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
             UpdateMovement();
 	}
 
@@ -105,9 +105,27 @@ public class EnemyBehaviour : MonoBehaviour
             case "Player":
                 PlayerBehaviour playerScript = colliderObj.GetComponent<PlayerBehaviour>();
 
-                if (playerScript != null)
+                if (playerScript != null && playerScript.InvincibilityTimer.IsTimerRunning == false)
                 {
                     playerScript.OnHit(damage, gameObject);
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D colliderObj)
+    {
+        switch (colliderObj.tag)
+        {
+            case "Player":
+                PlayerBehaviour playerScript = colliderObj.GetComponent<PlayerBehaviour>();
+
+                if (playerScript != null && playerScript.InvincibilityTimer.IsTimerRunning == false)
+                {
+                    playerScript.OnHit(damage, gameObject);
+                    Debug.Log("ONSTAY DAMAGE");
                 }
                 break;
             default:

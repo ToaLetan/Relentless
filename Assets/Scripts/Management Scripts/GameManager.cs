@@ -30,8 +30,6 @@ public class GameManager : MonoBehaviour
 
         splashScreen = GameObject.Find("Main Camera").transform.FindChild("SplashScreen").gameObject;
 
-        //GameJolt.UI.Manager.Instance.ShowSignIn();
-
         GameJolt.UI.Manager.Instance.ShowSignIn((bool success) => 
         {
             if (success)
@@ -76,6 +74,8 @@ public class GameManager : MonoBehaviour
     {
         //Hide the splash screen, enable objects movement.
         splashScreen.GetComponent<SpriteRenderer>().enabled = false;
+
+        Cursor.visible = false; //Hide the mouse cursor
 
         currentGameState = GameState.Running;
     }

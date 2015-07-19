@@ -9,11 +9,11 @@ public class UIManager : MonoBehaviour
 
     private GameObject crosshair = null;
 
+    private Vector2 healthBlipStartPos = new Vector2(-0.642f, 0.04f);
+
 	// Use this for initialization
 	void Start () 
     {
-        //Cursor.visible = false; //Hide the mouse cursor
-
         inputManager = InputManager.Instance;
 
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();

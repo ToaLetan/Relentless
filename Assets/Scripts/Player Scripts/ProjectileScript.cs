@@ -65,4 +65,16 @@ public class ProjectileScript : MonoBehaviour
                 break;
         }
     }
+
+    void OnCollisionEnter2D(Collision2D colliderObject)
+    {
+        switch(colliderObject.gameObject.tag)
+        {
+            case "Environment":
+                Despawn();
+                break;
+            default:
+                break;
+        }
+    }
 }
