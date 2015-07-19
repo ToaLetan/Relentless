@@ -130,6 +130,8 @@ public class UIManager : MonoBehaviour
             {
                 if (i > playerInfo.Health - 1)
                     healthBlips[i].GetComponent<SpriteRenderer>().enabled = false;
+                else
+                    healthBlips[i].GetComponent<SpriteRenderer>().enabled = true;
             }
             previousPlayerHealth = playerInfo.Health;
         }
@@ -198,5 +200,10 @@ public class UIManager : MonoBehaviour
     private void OnGameOver()
     {
         inputManager.Mouse_Moved -= ProcessMousePosition;
+    }
+
+    public void ShowShopInventory()
+    {
+        shopManager.ShowHideShop(true);
     }
 }

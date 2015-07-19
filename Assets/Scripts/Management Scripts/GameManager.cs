@@ -115,4 +115,10 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void ShowShopInventory()
+    {
+        if(enemySpawner.IsBetweenWaves == true)
+            uiManager.ShowShopInventory();
+    }
 }

@@ -11,11 +11,19 @@ public class ProjectileScript : MonoBehaviour
     private Timer lifeTimer = null;
 
     private int damage = 1;
+    private int pierceCount = 0;
+    private int currentNumPierces = 0;
 
     public int Damage
     {
         get { return damage; }
         set { damage = value; }
+    }
+
+    public int PierceCount
+    {
+        get { return pierceCount; }
+        set { pierceCount = value; }
     }
 
 	// Use this for initialization
@@ -58,7 +66,11 @@ public class ProjectileScript : MonoBehaviour
                 if (enemyInfo != null)
                 {
                     enemyInfo.OnHit(damage);
-                    Despawn(); //Make sure to remove the projectile, though keeping it will be useful for a pierce effect
+
+                    if (currentNumPierces >= pierceCount)
+                        Despawn(); //Make sure to remove the projectile, though keeping it will be useful for a pierce effect
+                    else
+                        currentNumPierces++;
                 }
                 break;
             default:

@@ -39,11 +39,13 @@ public static class SpeculativeContacts
                 {
                     contactObject = raycastList[i].collider.gameObject;
 
+                    /*
                     Debug.DrawRay(startPos, directionVector);
                     Debug.DrawRay(bottomLeft, directionVector);
                     Debug.DrawRay(bottomRight, directionVector);
                     Debug.DrawRay(topLeft, directionVector);
                     Debug.DrawRay(topRight, directionVector);
+                    */
                 }
             }
         }

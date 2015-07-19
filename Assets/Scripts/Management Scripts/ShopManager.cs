@@ -8,6 +8,9 @@ public class ShopManager : MonoBehaviour
     private GameManager gameManager = null;
     private UIManager uiManager = null;
     private EnemySpawnManager spawnManager = null;
+    private PlayerBehaviour playerInfo = null;
+
+    private List<GameObject> buttonList = new List<GameObject>();
 
     private GameObject healthButton = null;
     private GameObject pierceButton = null;
@@ -40,10 +43,17 @@ public class ShopManager : MonoBehaviour
         uiManager = gameManager.GetComponent<UIManager>();
         spawnManager = gameManager.GetComponent<EnemySpawnManager>();
 
+        playerInfo = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerBehaviour>();
+
         healthButton = gameObject.transform.FindChild("Button_Health").gameObject;
         pierceButton = gameObject.transform.FindChild("Button_Pierce").gameObject;
         damageButton = gameObject.transform.FindChild("Button_Damage").gameObject;
         turretButton = gameObject.transform.FindChild("Button_Turret").gameObject;
+
+        buttonList.Add(healthButton);
+        buttonList.Add(pierceButton);
+        buttonList.Add(damageButton);
+        buttonList.Add(turretButton);
 
         healthPriceDisplay[0] = healthButton.transform.FindChild("Price_Ones").gameObject;
         healthPriceDisplay[1] = healthButton.transform.FindChild("Price_Tens").gameObject;
@@ -60,6 +70,9 @@ public class ShopManager : MonoBehaviour
         turretPriceDisplay[0] = turretButton.transform.FindChild("Price_Ones").gameObject;
         turretPriceDisplay[1] = turretButton.transform.FindChild("Price_Tens").gameObject;
         turretPriceDisplay[2] = turretButton.transform.FindChild("Price_Hundreds").gameObject;
+
+        inputManager.Key_Pressed += ProcessMouseClick;
+        spawnManager.WaveStart += OnWaveStart;
 	}
 	
 	// Update is called once per frame
@@ -112,6 +125,12 @@ public class ShopManager : MonoBehaviour
             {
                 gameObject.transform.GetChild(i).GetComponent<SpriteRenderer>().enabled = showShop;
 
+                if (gameObject.transform.GetChild(i).GetComponent<BoxCollider2D>() != null)
+                    gameObject.transform.GetChild(i).GetComponent<BoxCollider2D>().enabled = showShop;
+
+                if (gameObject.transform.GetChild(i).GetComponent<ButtonScript>() != null)
+                    gameObject.transform.GetChild(i).GetComponent<ButtonScript>().IsMouseOver = false;
+
                 if (gameObject.transform.GetChild(i).childCount > 0)
                 {
                     for (int j = 0; j < gameObject.transform.GetChild(i).childCount; j++)
@@ -122,5 +141,66 @@ public class ShopManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void ProcessMouseClick(List<string> keysPressed)
+    {
+        if (keysPressed.Contains(inputManager.PlayerKeybinds.LeftMouse.ToString()) == true)
+        {
+            //Check if any buttons are being selected.
+            for (int i = 0; i < buttonList.Count; i++)
+            {
+                ButtonScript buttonInfo = buttonList[i].GetComponent<ButtonScript>();
+
+                if (buttonInfo.IsMouseOver == true)
+                {
+                    ProcessButton(buttonList[i]);
+                }
+            }
+        }
+    }
+
+    private void ProcessButton(GameObject buttonObj)
+    {
+        switch(buttonObj.name)
+        {
+            case "Button_Health":
+                if (playerInfo.Money >= healthPrice && playerInfo.Health < 10)
+                {
+                    playerInfo.Health = 10;
+                    playerInfo.Money -= healthPrice;
+                }
+                break;
+            case "Button_Pierce":
+                if (playerInfo.Money >= piercePrice && playerInfo.PierceValue < 999)
+                {
+                    playerInfo.PierceValue++;
+                    playerInfo.Money -= piercePrice;
+                }
+                    
+                break;
+            case "Button_Damage":
+                if (playerInfo.Money >= damagePrice && playerInfo.WeaponDamage < 999)
+                {
+                    playerInfo.WeaponDamage++;
+                    playerInfo.Money -= damagePrice;
+                }
+                break;
+            case "Button_Turret":
+                if (playerInfo.Money >= turretPrice)
+                {
+                    Debug.Log("BOUGHT A TURRET");
+                    playerInfo.Money -= turretPrice;
+                }
+                    
+                break;
+            default:
+                break;    
+        }
+    }
+
+    private void OnWaveStart()
+    {
+        ShowHideShop(false);
     }
 }

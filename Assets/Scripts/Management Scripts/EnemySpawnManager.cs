@@ -4,11 +4,14 @@ using System.Collections.Generic;
 
 public class EnemySpawnManager : MonoBehaviour 
 {
-    private const float BREAK_TIME = 5.0f;
+    private const float BREAK_TIME = 30.0f;
     private const float SPAWN_DELAY = 0.5f;
 
     private const int MAX_NUM_ENEMIES = 100;
     private const int BASE_NUM_ENEMIES = 5;
+
+    public delegate void SpawnEvent();
+    public event SpawnEvent WaveStart;
 
     private GameManager gameManager = null;
 
@@ -89,6 +92,9 @@ public class EnemySpawnManager : MonoBehaviour
 
     private void BeginWave()
     {
+        if (WaveStart != null)
+            WaveStart();
+
         currentWave++;
 
         isSpawningWave = true;

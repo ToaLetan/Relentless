@@ -39,8 +39,9 @@ public class PlayerBehaviour : MonoBehaviour
     private Vector2 currDirectionVector = Vector2.zero;
 
     private int health = 10;
+    private int pierceValue = 0;
     private int weaponDamage = 1;
-    private int money = 0;
+    private int money = 300;
 
     public Timer InvincibilityTimer
     { get { return invincibilityTimer; } }
@@ -52,6 +53,12 @@ public class PlayerBehaviour : MonoBehaviour
     {
         get { return health; }
         set { health = value; }
+    }
+
+    public int PierceValue
+    {
+        get { return pierceValue; }
+        set { pierceValue = value; }
     }
 
     public int WeaponDamage
@@ -166,6 +173,16 @@ public class PlayerBehaviour : MonoBehaviour
             {
                 Shoot();
             }
+            if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) )
+            {
+                GameObject vendor = GameObject.Find("Vendor");
+
+                if (vendor != null)
+                {
+                    if (SpeculativeContacts.GetDistance(gameObject.transform.position, vendor.transform.position) <= 0.2f)
+                        UseVendor();
+                }
+            }
         }
     }
 
@@ -264,11 +281,10 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject projectile = Resources.Load<GameObject>("Prefabs/Player_Projectile");
-
-        GameObject.Instantiate(projectile, playerWeapon.transform.position, playerWeapon.transform.rotation);
+        GameObject projectile = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Player_Projectile"), playerWeapon.transform.position, playerWeapon.transform.rotation) as GameObject;
 
         projectile.GetComponent<ProjectileScript>().Damage = weaponDamage;
+        projectile.GetComponent<ProjectileScript>().PierceCount = pierceValue;
     }
 
     public void OnHit(int damageTaken, GameObject enemy)
@@ -368,5 +384,11 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput.Key_Pressed -= ProcessKeyPress;
         playerInput.Key_Released -= Idle;
         invincibilityTimer.OnTimerComplete -= EndInvincibilityTime;
+    }
+
+    private void UseVendor()
+    {
+        //Show the vendor interface
+        gameManager.ShowShopInventory();
     }
 }
