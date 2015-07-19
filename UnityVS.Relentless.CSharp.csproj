@@ -79,6 +79,7 @@
     <Compile Include="Assets\Scripts\Management Scripts\EnemySpawnManager.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\InputManager.cs" />
+    <Compile Include="Assets\Scripts\Management Scripts\ShopManager.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerBehaviour.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\ProjectileScript.cs" />

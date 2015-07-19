@@ -23,6 +23,7 @@ public class EnemySpawnManager : MonoBehaviour
     private int previousnumEnemiesInScene = 0;
 
     private bool isSpawningWave = false;
+    private bool isBetweenWaves = true;
 
     public int NumEnemiesToSpawn
     {
@@ -42,6 +43,11 @@ public class EnemySpawnManager : MonoBehaviour
     public bool IsSpawningWave
     {
         get { return isSpawningWave; }
+    }
+
+    public bool IsBetweenWaves
+    {
+        get { return isBetweenWaves; }
     }
 
 	// Use this for initialization
@@ -86,6 +92,7 @@ public class EnemySpawnManager : MonoBehaviour
         currentWave++;
 
         isSpawningWave = true;
+        isBetweenWaves = false;
 
         numEnemiesToSpawn = BASE_NUM_ENEMIES * currentWave;
 
@@ -127,6 +134,7 @@ public class EnemySpawnManager : MonoBehaviour
         if (numEnemiesInScene == 0 && isSpawningWave == false)
         {
             waveBreakTimer.StartTimer(); //Start the break between waves.
+            isBetweenWaves = true;
         }
     }
 }

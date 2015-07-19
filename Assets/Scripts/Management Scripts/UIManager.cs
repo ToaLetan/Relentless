@@ -7,6 +7,7 @@ public class UIManager : MonoBehaviour
     private InputManager inputManager = null;
     private GameManager gameManager = null;
     private EnemySpawnManager spawnManager = null;
+    private ShopManager shopManager = null;
 
     private Camera mainCamera = null;
 
@@ -23,6 +24,7 @@ public class UIManager : MonoBehaviour
     private GameObject crosshair = null;
     private GameObject gameOverPanel = null;
     private GameObject scoreSubmissionStatus = null;
+    private GameObject shopPanel = null;
 
     private PlayerBehaviour playerInfo = null;
 
@@ -91,6 +93,9 @@ public class UIManager : MonoBehaviour
 
         ShowHideGameOver(false);
 
+        shopManager = HUDBar.transform.FindChild("ShopDisplay").GetComponent<ShopManager>();
+        shopManager.ShowHideShop(false);
+
         gameManager.GameOverEvent += OnGameOver;
 	}
 	
@@ -151,7 +156,7 @@ public class UIManager : MonoBehaviour
         }
     }
 
-    private void NumericalDisplay(GameObject[] displayObjs, int valueToShow)
+    public void NumericalDisplay(GameObject[] displayObjs, int valueToShow)
     {
         int onesValue = (valueToShow / 1) % 10;
         int tensValue = (valueToShow / 10) % 10;

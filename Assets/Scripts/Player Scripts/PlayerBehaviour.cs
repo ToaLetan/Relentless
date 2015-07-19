@@ -303,7 +303,6 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void PlayerDeath()
     {
-        Debug.Log("GAME OVER");
         GameObject deathAnim = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeathAnim"), gameObject.transform.position, gameObject.transform.rotation) as GameObject;
 
         playerInput.Key_Held -= ProcessMovement;
