@@ -6,6 +6,9 @@ public class PlayerBehaviour : MonoBehaviour
 {
     private const float MOVE_SPEED = 1.0f;
     private const float KNOCKBACK = 5.0f;
+    private const float ARM_POSITION_X_DEFAULT = 0.0601f;
+    private const float ARM_POSITION_X_LEFT = 0.0292f;
+    private const float ARM_POSITION_X_RIGHT = -0.0006f;
 
     public enum PlayerState { Idle, Dead }
 
@@ -26,6 +29,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private FlickerScript playerFlicker = null;
     private AnimationScript playerAnimScript = null;
+    private AnimationScript shoulderAnimScript = null;
 
     private PlayerState currentState = PlayerState.Idle;
 
@@ -55,18 +59,19 @@ public class PlayerBehaviour : MonoBehaviour
         playerInput = InputManager.Instance;
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
 
+        //Get all player child objects for easy access later.
+        playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
+        playerArm = gameObject.transform.FindChild("Player_Arm").gameObject;
+        playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
+
         playerFlicker = gameObject.GetComponent<FlickerScript>();
         playerAnimScript = gameObject.GetComponent<AnimationScript>();
+        shoulderAnimScript = playerShoulder.GetComponent<AnimationScript>();
 
         //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
         playerInput.Key_Released += Idle;
         playerInput.Key_Pressed += ProcessKeyPress;
-
-        //Get all player child objects for easy access later.
-        playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
-        playerArm = gameObject.transform.FindChild("Player_Arm").gameObject;
-        playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
 
         crosshair = GameObject.Find("Crosshair");
 
@@ -153,7 +158,8 @@ public class PlayerBehaviour : MonoBehaviour
             if (keysReleased.Contains(playerInput.PlayerKeybinds.Key_Up.ToString()) && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Down.ToString())
                 && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Left.ToString()) && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Right.ToString()) )
             {
-                playerAnimScript.PlayDirectionalAnimation("Player_Idle_" + DirectionName() );
+                playerAnimScript.PlayAnimation("Player_Idle_" + DirectionName() );
+                shoulderAnimScript.PlayAnimation("PlayerShoulder_Idle_" + DirectionName() );  
             }
         }
     }
@@ -180,8 +186,10 @@ public class PlayerBehaviour : MonoBehaviour
         if (mostRecentKeyPress == playerInput.PlayerKeybinds.Key_Right.ToString())
             currentDirection = GlobalConstants.Direction_Indices.RIGHT;
 
+        SetArmPosition();
+
         playerAnimScript.PlayDirectionalAnimation("Player_Walk_" + DirectionName() );
-            
+        shoulderAnimScript.PlayDirectionalAnimation("PlayerShoulder_Walk_" + DirectionName());
     }
 
     private string GetMostRecentKeyPress(List<int> currPressKeyIDs)
@@ -300,5 +308,22 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         return directionName;
+    }
+
+    private void SetArmPosition()
+    {
+        switch (currentDirection)
+        {
+            case GlobalConstants.Direction_Indices.UP:
+            case GlobalConstants.Direction_Indices.DOWN:
+                playerArm.transform.localPosition = new Vector3(ARM_POSITION_X_DEFAULT, playerArm.transform.localPosition.y, playerArm.transform.localPosition.z);
+                break;
+            case GlobalConstants.Direction_Indices.LEFT:
+                playerArm.transform.localPosition = new Vector3(ARM_POSITION_X_LEFT, playerArm.transform.localPosition.y, playerArm.transform.localPosition.z);
+                break;
+            case GlobalConstants.Direction_Indices.RIGHT:
+                playerArm.transform.localPosition = new Vector3(ARM_POSITION_X_RIGHT, playerArm.transform.localPosition.y, playerArm.transform.localPosition.z);
+                break;
+        }
     }
 }
