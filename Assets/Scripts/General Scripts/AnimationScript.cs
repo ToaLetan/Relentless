@@ -15,9 +15,12 @@ public class AnimationScript : MonoBehaviour
     private AnimationClip[] animationArray;
     private List<string> animationNamesList = new List<string>();
 
+    private string currentAnimName = "";
+
     private GameManager gameManager = null;
 
     private Animator objectAnimator = null;
+    private AnimatorStateInfo animatorState;
 
     private bool hasAnimationStopped = false;
 
@@ -57,6 +60,8 @@ public class AnimationScript : MonoBehaviour
             {
                 animationNamesList.Add(animationArray[i].name);
             }
+
+            currentAnimName = animationNamesList[0];
         }
 	}
 	
@@ -108,5 +113,35 @@ public class AnimationScript : MonoBehaviour
     public void ResetAnimator()
     {
         objectAnimator.enabled = true;
+        hasAnimationStopped = false;
+    }
+
+    public void PlayAnimation(string animationName) //Play an animation, making sure it's not already being played.
+    {
+        ResetAnimator();
+
+        animatorState = objectAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (animatorState.IsName(animationName) == false)
+            objectAnimator.Play(animationName);
+
+        currentAnimName = animationName;
+    }
+
+    public void PlayDirectionalAnimation(string animationName) //Play an animation at the time of the current animation, used by walk anims
+    {
+        ResetAnimator();
+
+        float currentAnimTime = 0.0f;
+
+        animatorState = objectAnimator.GetCurrentAnimatorStateInfo(0);
+
+        if (animatorState.IsName(animationName) == false)
+        {
+            currentAnimTime = animatorState.normalizedTime % 1;
+
+            objectAnimator.Play(animationName, -1, currentAnimTime);
+        }
+        currentAnimName = animationName;
     }
 }

@@ -13,11 +13,17 @@ public class EnemyBehaviour : MonoBehaviour
 
     private GameObject player = null;
 
+    private Vector3 destination = Vector3.zero;
+
+    public Vector2 movementDirection = Vector2.zero;
+
+    private float moveSpeed = BASE_MOVE_SPEED;
+
     private int health = 3;
     private int damage = 1;
     private int currentNumFlickers = 0;
 
-    private float moveSpeed = BASE_MOVE_SPEED;
+    private bool isStuck = false;
 
     public int Health
     { 
@@ -81,7 +87,15 @@ public class EnemyBehaviour : MonoBehaviour
     private void UpdateMovement()
     {
         //Move towards the player.
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, player.transform.position, moveSpeed * Time.deltaTime);
+        if (isStuck == false)
+            destination = player.transform.position;
+
+        Vector3 vectorToPlayer = Vector3.Normalize(player.transform.position - gameObject.transform.position);
+
+        movementDirection = new Vector2(vectorToPlayer.x, vectorToPlayer.y);
+
+        if (SpeculativeContacts.CheckObjectContact(gameObject, movementDirection, moveSpeed * Time.deltaTime) == false) //If not colliding with the environment, move.
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
     }
 
     private void OnTriggerEnter2D(Collider2D colliderObj)

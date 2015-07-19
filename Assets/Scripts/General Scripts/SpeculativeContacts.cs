@@ -20,8 +20,7 @@ public static class SpeculativeContacts
         Vector3 topRight = new Vector3(ownerObj.transform.position.x + ownerWidth, ownerObj.transform.position.y + ownerHeight, ownerObj.transform.position.z);
 
         //Only perform raycast checks with objects on the Environment layer.
-        int layerMask = 1 << 2;
-        layerMask = ~layerMask;
+        int layerMask = 1 << 8;
 
         List<RaycastHit2D> raycastList = new List<RaycastHit2D>();
 
@@ -52,5 +51,10 @@ public static class SpeculativeContacts
         raycastList.Clear();
 
         return contactObject;
+    }
+
+    public static float GetDistance(Vector2 point1, Vector2 point2)
+    {
+        return Mathf.Sqrt( (point1.x - point2.x) * (point1.x - point2.x) + (point1.y - point2.y) * (point1.y - point2.y) );
     }
 }

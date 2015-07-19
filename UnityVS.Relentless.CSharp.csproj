@@ -82,6 +82,8 @@
     <Compile Include="Assets\Scripts\Management Scripts\UIManager.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\PlayerBehaviour.cs" />
     <Compile Include="Assets\Scripts\Player Scripts\ProjectileScript.cs" />
+    <Compile Include="Assets\Scripts\Tools\AnimTool.cs" />
+    <Compile Include="Assets\Scripts\Tools\AnimationPopulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Shaders\PlayerBeam.shader" />

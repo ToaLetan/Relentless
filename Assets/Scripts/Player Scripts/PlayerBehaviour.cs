@@ -25,6 +25,7 @@ public class PlayerBehaviour : MonoBehaviour
     private GameObject crosshair = null;
 
     private FlickerScript playerFlicker = null;
+    private AnimationScript playerAnimScript = null;
 
     private PlayerState currentState = PlayerState.Idle;
 
@@ -55,9 +56,11 @@ public class PlayerBehaviour : MonoBehaviour
         gameManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>();
 
         playerFlicker = gameObject.GetComponent<FlickerScript>();
+        playerAnimScript = gameObject.GetComponent<AnimationScript>();
 
         //Subscribe to necessary events.
         playerInput.Key_Held += ProcessMovement;
+        playerInput.Key_Released += Idle;
         playerInput.Key_Pressed += ProcessKeyPress;
 
         //Get all player child objects for easy access later.
@@ -132,6 +135,29 @@ public class PlayerBehaviour : MonoBehaviour
         }
     }
 
+    private void ProcessKeyPress(List<string> keysPressed)
+    {
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
+        {
+            if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()))
+            {
+                Shoot();
+            }
+        }
+    }
+
+    private void Idle(List<string> keysReleased)
+    {
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
+        {
+            if (keysReleased.Contains(playerInput.PlayerKeybinds.Key_Up.ToString()) && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Down.ToString())
+                && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Left.ToString()) && keysReleased.Contains(playerInput.PlayerKeybinds.Key_Right.ToString()) )
+            {
+                playerAnimScript.PlayDirectionalAnimation("Player_Idle_" + DirectionName() );
+            }
+        }
+    }
+
     private void SetDirection(List<string> keys)
     {
         List<int> currPressedKeyIDS = new List<int>();
@@ -144,12 +170,18 @@ public class PlayerBehaviour : MonoBehaviour
         //Set the player's direction based on the most recent key pressed. If playing different idle anims, play them here.
         if (mostRecentKeyPress == playerInput.PlayerKeybinds.Key_Up.ToString())
             currentDirection = GlobalConstants.Direction_Indices.UP;
+
         if (mostRecentKeyPress == playerInput.PlayerKeybinds.Key_Down.ToString())
             currentDirection = GlobalConstants.Direction_Indices.DOWN;
+
         if (mostRecentKeyPress == playerInput.PlayerKeybinds.Key_Left.ToString())
             currentDirection = GlobalConstants.Direction_Indices.LEFT;
+
         if (mostRecentKeyPress == playerInput.PlayerKeybinds.Key_Right.ToString())
             currentDirection = GlobalConstants.Direction_Indices.RIGHT;
+
+        playerAnimScript.PlayDirectionalAnimation("Player_Walk_" + DirectionName() );
+            
     }
 
     private string GetMostRecentKeyPress(List<int> currPressKeyIDs)
@@ -189,17 +221,6 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         gameObject.transform.position = newPosition;
-    }
-
-    private void ProcessKeyPress(List<string> keysPressed)
-    {
-        if (gameManager.CurrentGameState == GameManager.GameState.Running)
-        {
-            if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()))
-            {
-                Shoot();
-            }
-        }
     }
 
     private void UpdateCrosshairAim()
@@ -254,5 +275,30 @@ public class PlayerBehaviour : MonoBehaviour
         Destroy(gameObject);
 
         gameManager.GameOver();
+    }
+
+    private string DirectionName()
+    {
+        string directionName = "";
+
+        switch(currentDirection)
+        {
+            case GlobalConstants.Direction_Indices.UP:
+                directionName = "Up";
+                break;
+            case GlobalConstants.Direction_Indices.DOWN:
+                directionName = "Down";
+                break;
+            case GlobalConstants.Direction_Indices.LEFT:
+                directionName = "Left";
+                break;
+            case GlobalConstants.Direction_Indices.RIGHT:
+                directionName = "Right";
+                break;
+            default:
+                break;
+        }
+
+        return directionName;
     }
 }
