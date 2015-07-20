@@ -14,6 +14,7 @@ public class EnemySpawnManager : MonoBehaviour
     public event SpawnEvent WaveStart;
 
     private GameManager gameManager = null;
+    private UIManager uiManager = null;
 
     private Timer spawnTimer = null; //The length ot fime between individual enemy spawns.
     private Timer waveBreakTimer = null; //The length of time between waves (use if implementing vendor)
@@ -27,6 +28,11 @@ public class EnemySpawnManager : MonoBehaviour
 
     private bool isSpawningWave = false;
     private bool isBetweenWaves = true;
+
+    public Timer WaveBreakTimer
+    {
+        get { return waveBreakTimer; }
+    }
 
     public int NumEnemiesToSpawn
     {
@@ -57,6 +63,7 @@ public class EnemySpawnManager : MonoBehaviour
 	void Start () 
     {
         gameManager = gameObject.transform.GetComponent<GameManager>();
+        uiManager = gameObject.transform.GetComponent<UIManager>();
 
         waveBreakTimer = new Timer(BREAK_TIME, true);
         waveBreakTimer.OnTimerComplete += BeginWave;
@@ -105,6 +112,8 @@ public class EnemySpawnManager : MonoBehaviour
         spawnTimer.StartTimer();
 
         waveBreakTimer.ResetTimer();
+
+        uiManager.ShowHideWaveTime(false);
     }
 
     private void SpawnNewEnemy()
@@ -141,6 +150,7 @@ public class EnemySpawnManager : MonoBehaviour
         {
             waveBreakTimer.StartTimer(); //Start the break between waves.
             isBetweenWaves = true;
+            uiManager.ShowHideWaveTime(true);
         }
     }
 }

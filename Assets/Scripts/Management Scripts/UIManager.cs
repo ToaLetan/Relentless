@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     private GameObject[] enemyNumDisplay = new GameObject[3];
     private GameObject[] moneyNumDisplay = new GameObject[3];
     private GameObject[] gameOverScoreDisplay = new GameObject[3];
+    private GameObject[] breakTimeDisplay = new GameObject[2];
 
     private Sprite[] numberSprites = new Sprite[10];
 
@@ -25,10 +26,13 @@ public class UIManager : MonoBehaviour
     private GameObject gameOverPanel = null;
     private GameObject scoreSubmissionStatus = null;
     private GameObject shopPanel = null;
+    private GameObject breakTimePanel = null;
 
     private PlayerBehaviour playerInfo = null;
 
     private Vector2 healthBlipStartPos = new Vector2(-0.65f, 0.04f);
+
+    private float previousBreakTime = 0.0f;
 
     private int previousPlayerHealth = 0;
     private int previousWaveNum = 0;
@@ -96,6 +100,10 @@ public class UIManager : MonoBehaviour
         shopManager = HUDBar.transform.FindChild("ShopDisplay").GetComponent<ShopManager>();
         shopManager.ShowHideShop(false);
 
+        breakTimePanel = HUDBar.transform.FindChild("WaveTimeDisplay").gameObject;
+        breakTimeDisplay[0] = breakTimePanel.transform.FindChild("Seconds_Ones").gameObject;
+        breakTimeDisplay[1] = breakTimePanel.transform.FindChild("Seconds_Tens").gameObject;
+
         gameManager.GameOverEvent += OnGameOver;
 	}
 	
@@ -156,6 +164,16 @@ public class UIManager : MonoBehaviour
             NumericalDisplay(moneyNumDisplay, playerInfo.Money);
             previousPlayerMoney = playerInfo.Money;
         }
+
+        //Update break time between waves
+        if (spawnManager.IsBetweenWaves == true)
+        {
+            if (previousBreakTime != spawnManager.WaveBreakTimer.CurrentTime)
+            {
+                TimeDisplay(breakTimeDisplay, spawnManager.WaveBreakTimer.TargetTime - spawnManager.WaveBreakTimer.CurrentTime);
+                previousBreakTime = spawnManager.WaveBreakTimer.CurrentTime;
+            }
+        }
     }
 
     public void NumericalDisplay(GameObject[] displayObjs, int valueToShow)
@@ -184,6 +202,17 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void ShowHideWaveTime(bool showWaveTime)
+    {
+        breakTimePanel.GetComponent<SpriteRenderer>().enabled = showWaveTime;
+
+        for (int i = 0; i < breakTimePanel.transform.childCount; i++)
+        {
+            if (breakTimePanel.transform.GetChild(i).GetComponent<SpriteRenderer>() != null)
+                breakTimePanel.transform.GetChild(i).GetComponent<SpriteRenderer>().enabled = showWaveTime;
+        }
+    }
+
     public void ShowGameOverScore()
     {
         NumericalDisplay(gameOverScoreDisplay, spawnManager.CurrentWave);
@@ -205,5 +234,17 @@ public class UIManager : MonoBehaviour
     public void ShowShopInventory()
     {
         shopManager.ShowHideShop(true);
+    }
+
+    private void TimeDisplay(GameObject[] displayObjs, float valueToShow)
+    {
+        int onesValue = (int)(valueToShow / 1) % 10;
+        int tensValue = (int)(valueToShow / 10) % 10;
+
+        SpriteRenderer onesText = displayObjs[0].GetComponent<SpriteRenderer>();
+        SpriteRenderer tensText = displayObjs[1].GetComponent<SpriteRenderer>();
+
+        onesText.sprite = numberSprites[onesValue];
+        tensText.sprite = numberSprites[tensValue];
     }
 }

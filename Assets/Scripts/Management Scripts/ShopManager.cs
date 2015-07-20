@@ -16,6 +16,7 @@ public class ShopManager : MonoBehaviour
     private GameObject pierceButton = null;
     private GameObject damageButton = null;
     private GameObject turretButton = null;
+    private GameObject closeButton = null;
 
     private GameObject[] healthPriceDisplay = new GameObject[3];
     private GameObject[] piercePriceDisplay = new GameObject[3];
@@ -49,11 +50,13 @@ public class ShopManager : MonoBehaviour
         pierceButton = gameObject.transform.FindChild("Button_Pierce").gameObject;
         damageButton = gameObject.transform.FindChild("Button_Damage").gameObject;
         turretButton = gameObject.transform.FindChild("Button_Turret").gameObject;
+        closeButton = gameObject.transform.FindChild("Button_Close").gameObject;
 
         buttonList.Add(healthButton);
         buttonList.Add(pierceButton);
         buttonList.Add(damageButton);
         buttonList.Add(turretButton);
+        buttonList.Add(closeButton);
 
         healthPriceDisplay[0] = healthButton.transform.FindChild("Price_Ones").gameObject;
         healthPriceDisplay[1] = healthButton.transform.FindChild("Price_Tens").gameObject;
@@ -176,8 +179,7 @@ public class ShopManager : MonoBehaviour
                 {
                     playerInfo.PierceValue++;
                     playerInfo.Money -= piercePrice;
-                }
-                    
+                } 
                 break;
             case "Button_Damage":
                 if (playerInfo.Money >= damagePrice && playerInfo.WeaponDamage < 999)
@@ -191,8 +193,10 @@ public class ShopManager : MonoBehaviour
                 {
                     Debug.Log("BOUGHT A TURRET");
                     playerInfo.Money -= turretPrice;
-                }
-                    
+                }   
+                break;
+            case "Button_Close":
+                ShowHideShop(false);
                 break;
             default:
                 break;    

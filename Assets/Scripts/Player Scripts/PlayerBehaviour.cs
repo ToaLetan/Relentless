@@ -10,6 +10,7 @@ public class PlayerBehaviour : MonoBehaviour
     private const float ARM_POSITION_X_LEFT = 0.0292f;
     private const float ARM_POSITION_X_RIGHT = -0.0006f;
     private const float INVINCIBLE_TIME = 0.5f;
+    private const float INTERACTION_RANGE = 0.25f;
 
     public enum PlayerState { Idle, Dead }
 
@@ -179,7 +180,7 @@ public class PlayerBehaviour : MonoBehaviour
 
                 if (vendor != null)
                 {
-                    if (SpeculativeContacts.GetDistance(gameObject.transform.position, vendor.transform.position) <= 0.2f)
+                    if (SpeculativeContacts.GetDistance(gameObject.transform.position, vendor.transform.position) <= INTERACTION_RANGE)
                         UseVendor();
                 }
             }

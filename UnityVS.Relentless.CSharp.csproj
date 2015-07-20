@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\General Scripts\GlobalConstants.cs" />
     <Compile Include="Assets\Scripts\General Scripts\SpeculativeContacts.cs" />
     <Compile Include="Assets\Scripts\General Scripts\Timer.cs" />
+    <Compile Include="Assets\Scripts\General Scripts\Vendor.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\ButtonScript.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\CameraScript.cs" />
     <Compile Include="Assets\Scripts\Management Scripts\EnemySpawnManager.cs" />
