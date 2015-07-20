@@ -8,6 +8,7 @@ public class EnemySpawnManager : MonoBehaviour
     private const float SPAWN_DELAY = 0.5f;
     private const float MAX_MOVESPEED = 0.75f;
 
+    private const int MAX_WAVE_NUM = 999;
     private const int MAX_NUM_ENEMIES = 300;
     private const int BASE_NUM_ENEMIES = 5;
     private const int MAX_DAMAGE = 10;
@@ -116,12 +117,13 @@ public class EnemySpawnManager : MonoBehaviour
         if (WaveStart != null)
             WaveStart();
 
-        currentWave++;
+        if(currentWave < MAX_WAVE_NUM - 1)
+            currentWave++;
         difficultyWaveIncrementation++;
 
         if (difficultyWaveIncrementation == 2)
         {
-            difficultyWaveIncrementation = 0;
+            difficultyWaveIncrementation = 0; //Reset the incrementation so every 2 waves = difficulty increase
 
             if(currentEnemyStrength + 1 < MAX_DAMAGE)
                 currentEnemyStrength++;

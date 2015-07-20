@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class PlayerBehaviour : MonoBehaviour 
 {
+    public const float MAX_MONEY = 999;
+
     private const float MOVE_SPEED = 1.0f;
     private const float KNOCKBACK = 5.0f;
     private const float ARM_POSITION_X_DEFAULT = 0.0601f;
@@ -28,6 +30,7 @@ public class PlayerBehaviour : MonoBehaviour
     private GameObject playerArm = null;
     private GameObject playerWeapon = null;
     private GameObject crosshair = null;
+    private GameObject heldTurret = null;
 
     private FlickerScript playerFlicker = null;
     private AnimationScript playerAnimScript = null;
@@ -43,6 +46,9 @@ public class PlayerBehaviour : MonoBehaviour
     private int pierceValue = 0;
     private int weaponDamage = 1;
     private int money = 0;
+
+    private bool isHoldingTurret = false;
+    private bool isInMenu = false;
 
     public Timer InvincibilityTimer
     { get { return invincibilityTimer; } }
@@ -72,6 +78,17 @@ public class PlayerBehaviour : MonoBehaviour
     {
         get { return money; }
         set { money = value; }
+    }
+
+    public bool IsHoldingTurret
+    {
+        get { return isHoldingTurret; }
+    }
+
+    public bool IsInMenu
+    {
+        get { return isInMenu; }
+        set { isInMenu = value; }
     }
 
 	// Use this for initialization
@@ -173,6 +190,16 @@ public class PlayerBehaviour : MonoBehaviour
             if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()) )
             {
                 Shoot();
+
+                if (isHoldingTurret == true && isInMenu == false)
+                {
+                    if (heldTurret != null)
+                    {
+                        heldTurret.transform.parent = null;
+                        heldTurret.GetComponent<AutoTurret>().IsTurretActive = true;
+                        isHoldingTurret = false;
+                    }
+                }
             }
             if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) )
             {
@@ -184,6 +211,11 @@ public class PlayerBehaviour : MonoBehaviour
                         UseVendor();
                 }
             }
+        }
+        if (gameManager.CurrentGameState != GameManager.GameState.Splash)
+        {
+            if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Menu.ToString()))
+                Application.Quit();
         }
     }
 
@@ -391,5 +423,16 @@ public class PlayerBehaviour : MonoBehaviour
     {
         //Show the vendor interface
         gameManager.ShowShopInventory();
+        isInMenu = true;
+    }
+
+    public void AddTurret()
+    {
+        //Instantiate a turret on the cursor position, allow placement with left click.
+        isHoldingTurret = true;
+
+        heldTurret = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/AutoTurret"), Vector3.zero, Quaternion.identity) as GameObject;
+        heldTurret.transform.parent = crosshair.transform;
+        heldTurret.transform.localPosition = Vector3.zero;
     }
 }

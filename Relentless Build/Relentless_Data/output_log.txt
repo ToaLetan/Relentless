@@ -1,4 +1,4 @@
-Initialize engine version: 5.1.0f3 (ec70b008569d)
+Initialize engine version: 5.1.2f1 (afd2369b692a)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
@@ -18,16 +18,10 @@ Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.070 seconds
+- Completed reload, in  0.067 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.dll (this message is harmless)
-NullReferenceException: Object reference not set to an instance of an object
-  at UnityEngine.UI.Selectable.Select () [0x00000] in <filename unknown>:0 
-  at GameJolt.UI.Behaviours.KeyboardNavigableForm.OnStateEnter (UnityEngine.Animator animator, AnimatorStateInfo animatorStateInfo, Int32 layerIndex) [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-

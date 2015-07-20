@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour 
 {
+    private const float CLOSE_DELAY_TIME = 0.75f;
+
     private InputManager inputManager = null;
     private GameManager gameManager = null;
     private UIManager uiManager = null;
@@ -25,6 +27,8 @@ public class ShopManager : MonoBehaviour
 
     private Sprite[] numberSprites = new Sprite[10];
 
+    private Timer closeDelayTimer = null;
+
     private int previousHealthPrice = 0;
     private int previousPiercePrice = 0;
     private int previousDamagePrice = 0;
@@ -34,6 +38,8 @@ public class ShopManager : MonoBehaviour
     private int piercePrice = 20;
     private int damagePrice = 10;
     private int turretPrice = 30;
+
+    private bool givePlayerTurret = false;
 
 	// Use this for initialization
 	void Start () 
@@ -74,8 +80,12 @@ public class ShopManager : MonoBehaviour
         turretPriceDisplay[1] = turretButton.transform.FindChild("Price_Tens").gameObject;
         turretPriceDisplay[2] = turretButton.transform.FindChild("Price_Hundreds").gameObject;
 
+        closeDelayTimer = new Timer(CLOSE_DELAY_TIME);
+
         inputManager.Key_Pressed += ProcessMouseClick;
         spawnManager.WaveStart += OnWaveStart;
+        closeDelayTimer.OnTimerComplete += SetClosed;
+        gameManager.GameOverEvent += OnGameOver;
 	}
 	
 	// Update is called once per frame
@@ -86,6 +96,7 @@ public class ShopManager : MonoBehaviour
             if (spawnManager.IsBetweenWaves == true)
             {
                 UpdatePrices();
+                closeDelayTimer.Update();
             }
         }
 	}
@@ -117,7 +128,7 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    public void ShowHideShop(bool showShop)
+    public void ShowHideShop(bool showShop, bool setInMenu)
     {
         //Loop through all objects and child objects and enable/disable their sprite renderers.
         gameObject.GetComponent<SpriteRenderer>().enabled = showShop;
@@ -144,6 +155,9 @@ public class ShopManager : MonoBehaviour
                 }
             }
         }
+
+        if (showShop == false && playerInfo.IsInMenu == true && setInMenu == true)
+            playerInfo.IsInMenu = false;
     }
 
     private void ProcessMouseClick(List<string> keysPressed)
@@ -191,15 +205,21 @@ public class ShopManager : MonoBehaviour
                 }
                 break;
             case "Button_Turret":
-                if (playerInfo.Money >= turretPrice)
+                if (playerInfo.Money >= turretPrice && playerInfo.IsHoldingTurret == false && givePlayerTurret == false)
                 {
-                    Debug.Log("BOUGHT A TURRET");
+                    givePlayerTurret = true;
                     playerInfo.Money -= turretPrice;
                     turretPrice += 100;
                 }   
                 break;
             case "Button_Close":
-                ShowHideShop(false);
+                ShowHideShop(false, false);
+                closeDelayTimer.StartTimer();
+                if (givePlayerTurret == true)
+                {
+                    playerInfo.AddTurret();
+                    givePlayerTurret = false;
+                }
                 break;
             default:
                 break;    
@@ -208,6 +228,20 @@ public class ShopManager : MonoBehaviour
 
     private void OnWaveStart()
     {
-        ShowHideShop(false);
+        ShowHideShop(false, true);
+    }
+
+    private void SetClosed()
+    {
+        playerInfo.IsInMenu = false;
+        closeDelayTimer.ResetTimer();
+    }
+
+    private void OnGameOver()
+    {
+        inputManager.Key_Pressed -= ProcessMouseClick;
+        spawnManager.WaveStart -= OnWaveStart;
+        closeDelayTimer.OnTimerComplete -= SetClosed;
+        gameManager.GameOverEvent -= OnGameOver;
     }
 }

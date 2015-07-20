@@ -98,7 +98,7 @@ public class UIManager : MonoBehaviour
         ShowHideGameOver(false);
 
         shopManager = HUDBar.transform.FindChild("ShopDisplay").GetComponent<ShopManager>();
-        shopManager.ShowHideShop(false);
+        shopManager.ShowHideShop(false, false);
 
         breakTimePanel = HUDBar.transform.FindChild("WaveTimeDisplay").gameObject;
         breakTimeDisplay[0] = breakTimePanel.transform.FindChild("Seconds_Ones").gameObject;
@@ -233,7 +233,7 @@ public class UIManager : MonoBehaviour
 
     public void ShowShopInventory()
     {
-        shopManager.ShowHideShop(true);
+        shopManager.ShowHideShop(true, false);
     }
 
     private void TimeDisplay(GameObject[] displayObjs, float valueToShow)

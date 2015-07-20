@@ -11,6 +11,8 @@ public class EnemyBehaviour : MonoBehaviour
 
     private FlickerScript enemyFlicker = null;
 
+    private AutoTurret turretTargetingThis = null;
+
     private GameObject player = null;
 
     private Vector3 destination = Vector3.zero;
@@ -24,6 +26,12 @@ public class EnemyBehaviour : MonoBehaviour
     private int currentNumFlickers = 0;
 
     private bool isStuck = false;
+
+    public AutoTurret TurretTargetingThis
+    {
+        get { return turretTargetingThis; }
+        set { turretTargetingThis = value; }
+    }
 
     public int Health
     { 
@@ -78,7 +86,11 @@ public class EnemyBehaviour : MonoBehaviour
     private void Despawn()
     {
         //Probably play a rad animation before despawning. Give the player money to spend on the vendor.
+        if (player.GetComponent<PlayerBehaviour>().Money < PlayerBehaviour.MAX_MONEY - 1)
         player.GetComponent<PlayerBehaviour>().Money += 1;
+
+        if (turretTargetingThis != null)
+            turretTargetingThis.CurrentTarget = null;
 
         GameObject deathAnimation = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/DeathAnim"), gameObject.transform.position, gameObject.transform.rotation) as GameObject;
 
