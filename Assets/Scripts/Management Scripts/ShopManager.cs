@@ -179,6 +179,7 @@ public class ShopManager : MonoBehaviour
                 {
                     playerInfo.PierceValue++;
                     playerInfo.Money -= piercePrice;
+                    piercePrice += 40;
                 } 
                 break;
             case "Button_Damage":
@@ -186,6 +187,7 @@ public class ShopManager : MonoBehaviour
                 {
                     playerInfo.WeaponDamage++;
                     playerInfo.Money -= damagePrice;
+                    damagePrice += 20;
                 }
                 break;
             case "Button_Turret":
@@ -193,6 +195,7 @@ public class ShopManager : MonoBehaviour
                 {
                     Debug.Log("BOUGHT A TURRET");
                     playerInfo.Money -= turretPrice;
+                    turretPrice += 100;
                 }   
                 break;
             case "Button_Close":

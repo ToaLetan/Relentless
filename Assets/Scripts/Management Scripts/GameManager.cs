@@ -5,7 +5,7 @@ using GameJolt;
 
 public class GameManager : MonoBehaviour 
 {
-    private const int SCOREBOARD_ID = 83337;
+    private const int SCOREBOARD_ID = 83337; //Get this info from the game's page on GameJolt
 
     public enum GameState { Splash, Running, Paused, Over };
     private GameState currentGameState = GameState.Splash;

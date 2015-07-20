@@ -10,7 +10,7 @@ public class PlayerBehaviour : MonoBehaviour
     private const float ARM_POSITION_X_LEFT = 0.0292f;
     private const float ARM_POSITION_X_RIGHT = -0.0006f;
     private const float INVINCIBLE_TIME = 0.5f;
-    private const float INTERACTION_RANGE = 0.25f;
+    private const float INTERACTION_RANGE = 0.26f;
 
     public enum PlayerState { Idle, Dead }
 
@@ -42,7 +42,7 @@ public class PlayerBehaviour : MonoBehaviour
     private int health = 10;
     private int pierceValue = 0;
     private int weaponDamage = 1;
-    private int money = 300;
+    private int money = 0;
 
     public Timer InvincibilityTimer
     { get { return invincibilityTimer; } }
@@ -176,7 +176,7 @@ public class PlayerBehaviour : MonoBehaviour
             }
             if (keysPressed.Contains(playerInput.PlayerKeybinds.Key_Interact.ToString()) )
             {
-                GameObject vendor = GameObject.Find("Vendor");
+                GameObject vendor = GameObject.Find("Vendor(Clone)");
 
                 if (vendor != null)
                 {

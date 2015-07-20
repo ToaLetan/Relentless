@@ -22,8 +22,11 @@ public class CameraScript : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
     {
-        if(gameManager.CurrentGameState == GameManager.GameState.Running)
+        if (gameManager.CurrentGameState == GameManager.GameState.Running)
+        {
             FollowPlayer();
+        }
+            
 	}
 
     private void FollowPlayer()
