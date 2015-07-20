@@ -38,21 +38,34 @@ public class GameManager : MonoBehaviour
 
         splashScreen = GameObject.Find("Main Camera").transform.FindChild("SplashScreen").gameObject;
 
-        GameJolt.UI.Manager.Instance.ShowSignIn((bool success) => 
+        bool isSignedIn = GameJolt.API.Manager.Instance.CurrentUser != null;
+
+        if (isSignedIn == false)
         {
-            if (success)
+            GameJolt.UI.Manager.Instance.ShowSignIn((bool success) =>
             {
-                playerName = GameJolt.API.Manager.Instance.CurrentUser.Name;
-                isLoggedIn = true;
-                StartGame();
-            }
-            else
-            {
-                isLoggedIn = false;
-                StartGame();
-            }
+                if (success)
+                {
+                    playerName = GameJolt.API.Manager.Instance.CurrentUser.Name;
+                    isLoggedIn = true;
+                    StartGame();
+                }
+                else
+                {
+                    isLoggedIn = false;
+                    StartGame();
+                }
             });
-	    }
+        }
+        else
+        {
+            playerName = GameJolt.API.Manager.Instance.CurrentUser.Name;
+            isLoggedIn = true;
+            StartGame();
+        }
+    }
+
+        
 	
 	// Update is called once per frame
 	void Update () 

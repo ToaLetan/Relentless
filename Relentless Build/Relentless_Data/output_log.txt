@@ -18,7 +18,7 @@ Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.067 seconds
+- Completed reload, in  0.064 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
