@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     private int waveReached = 0;
 
     private bool isLoggedIn = false;
+    private bool isShowingSplash = true;
 
     public GameState CurrentGameState
     { get { return currentGameState; } }
@@ -38,7 +39,7 @@ public class GameManager : MonoBehaviour
 
         splashScreen = GameObject.Find("Main Camera").transform.FindChild("SplashScreen").gameObject;
 
-        bool isSignedIn = GameJolt.API.Manager.Instance.CurrentUser != null;
+        /*bool isSignedIn = GameJolt.API.Manager.Instance.CurrentUser != null;
 
         if (isSignedIn == false)
         {
@@ -62,7 +63,7 @@ public class GameManager : MonoBehaviour
             playerName = GameJolt.API.Manager.Instance.CurrentUser.Name;
             isLoggedIn = true;
             StartGame();
-        }
+        }*/
     }
 
         
@@ -72,6 +73,12 @@ public class GameManager : MonoBehaviour
     {
         if (gameInput != null)
             gameInput.Update();
+
+        if(isShowingSplash && Input.anyKey)
+        {
+            isShowingSplash = false;
+            StartGame();
+        }
 	}
 
     public void GameOver()
@@ -85,17 +92,17 @@ public class GameManager : MonoBehaviour
 
         uiManager.ShowHideGameOver(true);
         uiManager.ShowGameOverScore();
-        uiManager.ShowSubmissionStatus(isLoggedIn);
+        //uiManager.ShowSubmissionStatus(isLoggedIn);
 
         //If the user has signed in, submit the high score.
         waveReached = enemySpawner.CurrentWave;
 
         string scoreboardText = "Wave reached: " + waveReached;
 
-        GameJolt.API.Scores.Add(waveReached, scoreboardText, SCOREBOARD_ID, "", (bool success) => 
+        /*GameJolt.API.Scores.Add(waveReached, scoreboardText, SCOREBOARD_ID, "", (bool success) => 
         {
             Debug.Log(string.Format("Score Add {0}.", success ? "Successful" : "Failed"));
-        });
+        });*/
     }
 
     public void StartGame()

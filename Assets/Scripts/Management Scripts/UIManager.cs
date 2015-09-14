@@ -229,6 +229,7 @@ public class UIManager : MonoBehaviour
     private void OnGameOver()
     {
         inputManager.Mouse_Moved -= ProcessMousePosition;
+        gameManager.GameOverEvent -= OnGameOver;
     }
 
     public void ShowShopInventory()

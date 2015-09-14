@@ -156,8 +156,11 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        if (showShop == false && playerInfo.IsInMenu == true && setInMenu == true)
-            playerInfo.IsInMenu = false;
+        if(playerInfo != null)
+        {
+            if (showShop == false && playerInfo.IsInMenu == true && setInMenu == true)
+                playerInfo.IsInMenu = false;
+        }
     }
 
     private void ProcessMouseClick(List<string> keysPressed)

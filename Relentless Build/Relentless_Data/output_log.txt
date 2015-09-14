@@ -1,10 +1,10 @@
-Initialize engine version: 5.1.2f1 (afd2369b692a)
+Initialize engine version: 5.2.0f3 (e7947df39b5c)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
     Renderer: AMD Radeon HD 5800 Series (ID=0x6898)
     Vendor:   ATI
-    VRAM:     1009 MB
+    VRAM:     1010 MB
 Begin MonoManager ReloadAssembly
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.dll (this message is harmless)
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.dll into Unity Child Domain
@@ -16,12 +16,12 @@ Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
-Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
-Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.064 seconds
+Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.Core.dll (this message is harmless)
+- Completed reload, in  0.067 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.dll (this message is harmless)
+Setting up 1 worker threads for Enlighten.
+  Thread -> id: fc4 -> priority: 1 

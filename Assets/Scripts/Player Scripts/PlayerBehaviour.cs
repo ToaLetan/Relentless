@@ -45,7 +45,7 @@ public class PlayerBehaviour : MonoBehaviour
     private int health = 10;
     private int pierceValue = 0;
     private int weaponDamage = 1;
-    private int money = 0;
+    public int money = 0;
 
     private bool isHoldingTurret = false;
     private bool isInMenu = false;
