@@ -4,7 +4,7 @@ using System.Collections;
 public class ProjectileScript : MonoBehaviour 
 {
     private const float LIFE_TIME = 5.0f; //When the projectile has been in the scene for 5 seconds, despawn.
-    private const float MOVE_SPEED = 2.0f;
+    private const float MOVE_SPEED = 3.0f;
 
     private GameManager gameManager = null;
 
@@ -47,7 +47,7 @@ public class ProjectileScript : MonoBehaviour
 
     private void UpdateMovement()
     {
-        gameObject.transform.position += gameObject.transform.right * MOVE_SPEED * Time.deltaTime;
+        gameObject.transform.position += gameObject.transform.right * MOVE_SPEED;
     }
 
     private void Despawn()

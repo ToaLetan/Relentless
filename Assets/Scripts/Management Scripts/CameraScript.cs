@@ -3,9 +3,9 @@ using System.Collections;
 
 public class CameraScript : MonoBehaviour 
 {
-    private const float BOUNDS_X = 1.56f;
-    private const float BOUNDS_Y_BOTTOM = -1.36f;
-    private const float BOUNDS_Y_TOP = 1.6f;
+    private const int BOUNDS_X = 128;
+    private const int BOUNDS_Y_BOTTOM = -112;
+    private const int BOUNDS_Y_TOP = 136;
 
     private GameManager gameManager = null;
 

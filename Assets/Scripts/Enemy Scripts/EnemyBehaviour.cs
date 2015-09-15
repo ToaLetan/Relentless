@@ -3,7 +3,7 @@ using System.Collections;
 
 public class EnemyBehaviour : MonoBehaviour 
 {
-    private const float BASE_MOVE_SPEED = 0.25f;
+    private const float BASE_MOVE_SPEED = 0.75f;
 
     private GameManager gameManager = null;
 
@@ -108,8 +108,8 @@ public class EnemyBehaviour : MonoBehaviour
 
         movementDirection = new Vector2(vectorToPlayer.x, vectorToPlayer.y);
 
-        if (SpeculativeContacts.CheckObjectContact(gameObject, movementDirection, moveSpeed * Time.deltaTime) == false) //If not colliding with the environment, move.
-            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed * Time.deltaTime);
+        if (SpeculativeContacts.CheckObjectContact(gameObject, movementDirection, moveSpeed) == false) //If not colliding with the environment, move.
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, destination, moveSpeed);
     }
 
     private void OnTriggerEnter2D(Collider2D colliderObj)

@@ -17,11 +17,11 @@ Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Manage
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
 Loading E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.Core.dll (this message is harmless)
-- Completed reload, in  0.067 seconds
+- Completed reload, in  0.068 seconds
 desktop: 1920x1080 60Hz; virtual: 1920x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
 Platform assembly: E:\[PORTFOLIO BUILDS]\Relentless\Relentless Build\Relentless_Data\Managed\System.dll (this message is harmless)
 Setting up 1 worker threads for Enlighten.
-  Thread -> id: fc4 -> priority: 1 
+  Thread -> id: 2420 -> priority: 1 

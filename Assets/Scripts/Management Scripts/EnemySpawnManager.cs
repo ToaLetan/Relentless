@@ -6,7 +6,7 @@ public class EnemySpawnManager : MonoBehaviour
 {
     private const float BREAK_TIME = 30.0f;
     private const float SPAWN_DELAY = 0.5f;
-    private const float MAX_MOVESPEED = 0.75f;
+    private const float MAX_MOVESPEED = 2.0f;
 
     private const int MAX_WAVE_NUM = 999;
     private const int MAX_NUM_ENEMIES = 300;
@@ -27,9 +27,9 @@ public class EnemySpawnManager : MonoBehaviour
 
     private GameObject vendor = null;
 
-    private Vector3 vendorPosition = new Vector3(0, 0.61f, 0);
+    private Vector3 vendorPosition = new Vector3(0, 61, 0);
 
-    private float currentEnemySpeed = 0.25f;
+    private float currentEnemySpeed = 0.75f;
 
     private int numEnemiesToSpawn = 0;
     private int currentWave = 0;
@@ -128,8 +128,8 @@ public class EnemySpawnManager : MonoBehaviour
             if(currentEnemyStrength + 1 < MAX_DAMAGE)
                 currentEnemyStrength++;
 
-            if (currentEnemySpeed + 0.05f < MAX_MOVESPEED)
-                currentEnemySpeed += 0.05f;
+            if (currentEnemySpeed + 0.15f < MAX_MOVESPEED)
+                currentEnemySpeed += 0.15f;
 
             if(currentEnemyHealth + 1 < MAX_HEALTH)
                 currentEnemyHealth ++;

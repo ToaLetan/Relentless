@@ -96,7 +96,8 @@ public class ShopManager : MonoBehaviour
             if (spawnManager.IsBetweenWaves == true)
             {
                 UpdatePrices();
-                closeDelayTimer.Update();
+                if(closeDelayTimer != null)
+                    closeDelayTimer.Update();
             }
         }
 	}

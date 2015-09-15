@@ -30,7 +30,7 @@ public class UIManager : MonoBehaviour
 
     private PlayerBehaviour playerInfo = null;
 
-    private Vector2 healthBlipStartPos = new Vector2(-0.65f, 0.04f);
+    private Vector2 healthBlipStartPos = new Vector2(-65.5f, 4);
 
     private float previousBreakTime = 0.0f;
 

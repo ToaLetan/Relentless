@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Vendor : MonoBehaviour 
 {
-    private const float INTERACT_RANGE = 0.26f;
+    private const int INTERACT_RANGE = 26;
 
     private GameManager gameManager = null;
 

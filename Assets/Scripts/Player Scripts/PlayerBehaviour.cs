@@ -4,15 +4,16 @@ using System.Collections.Generic;
 
 public class PlayerBehaviour : MonoBehaviour 
 {
-    public const float MAX_MONEY = 999;
-
-    private const float MOVE_SPEED = 1.0f;
-    private const float KNOCKBACK = 5.0f;
-    private const float ARM_POSITION_X_DEFAULT = 0.0601f;
-    private const float ARM_POSITION_X_LEFT = 0.0292f;
-    private const float ARM_POSITION_X_RIGHT = -0.0006f;
     private const float INVINCIBLE_TIME = 0.5f;
-    private const float INTERACTION_RANGE = 0.26f;
+
+    public const int MAX_MONEY = 999;
+
+    private const int MOVE_SPEED = 2;
+    private const int KNOCKBACK = 5;
+    private const int ARM_POSITION_X_DEFAULT = 6;
+    private const int ARM_POSITION_X_LEFT = 0;
+    private const int ARM_POSITION_X_RIGHT = 0;
+    private const int INTERACTION_RANGE = 26;
 
     public enum PlayerState { Idle, Dead }
 
@@ -42,10 +43,12 @@ public class PlayerBehaviour : MonoBehaviour
 
     private Vector2 currDirectionVector = Vector2.zero;
 
+    private float bulletSpawnPosX = 0.0f;
+
     private int health = 10;
     private int pierceValue = 0;
     private int weaponDamage = 1;
-    public int money = 0;
+    private int money = 0;
 
     private bool isHoldingTurret = false;
     private bool isInMenu = false;
@@ -101,6 +104,8 @@ public class PlayerBehaviour : MonoBehaviour
         playerShoulder = gameObject.transform.FindChild("Player_Shoulder").gameObject;
         playerArm = gameObject.transform.FindChild("Player_Arm").gameObject;
         playerWeapon = playerArm.transform.FindChild("Weapon").gameObject;
+
+        bulletSpawnPosX = playerArm.GetComponent<SpriteRenderer>().sprite.bounds.extents.x;
 
         playerFlicker = gameObject.GetComponent<FlickerScript>();
         playerAnimScript = gameObject.GetComponent<AnimationScript>();
@@ -290,10 +295,10 @@ public class PlayerBehaviour : MonoBehaviour
     {
         Vector3 newPosition = gameObject.transform.position;
 
-        if (SpeculativeContacts.CheckObjectContact(gameObject, direction, MOVE_SPEED * Time.deltaTime) == false)
+        if (SpeculativeContacts.CheckObjectContact(gameObject, direction, MOVE_SPEED) == false)
         {
-            newPosition.x += direction.x * Time.deltaTime * MOVE_SPEED;
-            newPosition.y += direction.y * Time.deltaTime * MOVE_SPEED;
+            newPosition.x += direction.x * MOVE_SPEED;
+            newPosition.y += direction.y * MOVE_SPEED;
         }
 
         gameObject.transform.position = newPosition;
@@ -314,7 +319,9 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject projectile = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Player_Projectile"), playerWeapon.transform.position, playerWeapon.transform.rotation) as GameObject;
+        Vector3 projectileSpawnLocation = playerWeapon.transform.position + (playerWeapon.transform.right * bulletSpawnPosX);
+
+        GameObject projectile = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Player_Projectile"), projectileSpawnLocation, playerWeapon.transform.rotation) as GameObject;
 
         projectile.GetComponent<ProjectileScript>().Damage = weaponDamage;
         projectile.GetComponent<ProjectileScript>().PierceCount = pierceValue;
@@ -335,8 +342,8 @@ public class PlayerBehaviour : MonoBehaviour
 
             int directionModifier = 0;
 
-            if (SpeculativeContacts.CheckObjectContact(gameObject, knockbackDirection, KNOCKBACK * Time.deltaTime) == false)
-                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, KNOCKBACK * Time.deltaTime * -1);
+            if (SpeculativeContacts.CheckObjectContact(gameObject, knockbackDirection, KNOCKBACK) == false)
+                gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, enemy.transform.position, KNOCKBACK * -1);
 
             if (health <= 0)
             {
