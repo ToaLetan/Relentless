@@ -14,6 +14,8 @@ public class AutoTurret : MonoBehaviour
 
     private Timer shootTimer = null;
 
+    private float bulletSpawnPosX = 0.0f;
+
     private bool isTurretActive = false;
 
     public GameObject CurrentTarget
@@ -35,10 +37,12 @@ public class AutoTurret : MonoBehaviour
 
         turretTop = gameObject.transform.GetChild(0).gameObject;
 
+        bulletSpawnPosX = turretTop.GetComponent<SpriteRenderer>().sprite.bounds.extents.x;
+
         shootTimer = new Timer(SHOOT_TIME);
 
         shootTimer.OnTimerComplete += Shoot;
-	}
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -88,7 +92,9 @@ public class AutoTurret : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject projectile = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Player_Projectile"), turretTop.transform.position, turretTop.transform.rotation) as GameObject;
+        Vector3 projectileSpawnLocation = turretTop.transform.position + (turretTop.transform.right * bulletSpawnPosX);
+
+        GameObject projectile = GameObject.Instantiate(Resources.Load<GameObject>("Prefabs/Player_Projectile"), projectileSpawnLocation, turretTop.transform.rotation) as GameObject;
 
         projectile.GetComponent<ProjectileScript>().Damage = 1;
         projectile.GetComponent<ProjectileScript>().PierceCount = 1; //Might as well give turrets pierce considering their price.

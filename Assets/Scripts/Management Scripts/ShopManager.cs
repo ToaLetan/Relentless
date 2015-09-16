@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class ShopManager : MonoBehaviour 
 {
-    private const float CLOSE_DELAY_TIME = 0.75f;
+    private const float CLOSE_DELAY_TIME = 0.25f;
 
     private InputManager inputManager = null;
     private GameManager gameManager = null;

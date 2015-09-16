@@ -194,7 +194,8 @@ public class PlayerBehaviour : MonoBehaviour
         {
             if (keysPressed.Contains(playerInput.PlayerKeybinds.LeftMouse.ToString()) )
             {
-                Shoot();
+                if(!isHoldingTurret && !isInMenu)
+                    Shoot();
 
                 if (isHoldingTurret == true && isInMenu == false)
                 {
